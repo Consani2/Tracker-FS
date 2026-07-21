@@ -1,7 +1,4 @@
 import SearchBar from "../components/SearchBar";
-import ListaCards from "../components/SeriesCard";
-import Teste from "../components/Teste.jsx";
-import FavoriteColor from "../components/FavoriteColor.jsx";
 import ExibirSeries from "../components/ExibirSeries.jsx";
 import {useState} from "react";
 
