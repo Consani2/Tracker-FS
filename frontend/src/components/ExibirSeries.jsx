@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 
-
+const TOKEN = import.meta.env.VITE_TMDB_BEARER_TOKEN;
 
 function ExibirSeries({series}) {
 
