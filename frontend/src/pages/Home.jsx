@@ -10,7 +10,6 @@ function Home() {
         <div>
             <h1>Filme/Série</h1>
 
-
             <SearchBar onSearch={setSeries} />
 
 
