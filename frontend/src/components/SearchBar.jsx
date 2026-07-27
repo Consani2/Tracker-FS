@@ -1,11 +1,11 @@
-import { searchSeries } from "../services/tmbdbService";
+import {searchSeriesByName} from "../services/tmbdbService";
 
 function SearchBar({ onSearch }) {
 
     async function handleSearch() {
         let nome = document.getElementById("nomeSerie").value;
 
-        const result = await searchSeries(nome);
+        const result = await searchSeriesByName(nome);
 
         onSearch(result);
     }

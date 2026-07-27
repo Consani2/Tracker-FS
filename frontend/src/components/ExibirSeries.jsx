@@ -1,15 +1,11 @@
 import {useEffect} from "react";
+import SeriesCard from "./SeriesCard.jsx";
 
 
 function ExibirSeries({series}) {
 
-    console.log(series)
-    return <>
-        {series.map((serie) => (
-        <div key={serie.id}>
-            <h2>{serie.name}</h2>
-            <p>{serie.overview}</p>
-        </div>
+    return <>{series.map((serie) => (
+         <SeriesCard key={serie.id} series={serie} />
     ))}</>
 }
 
