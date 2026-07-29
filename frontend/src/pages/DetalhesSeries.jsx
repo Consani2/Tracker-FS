@@ -12,8 +12,12 @@ function DetalhesSeries() {
 
     useEffect(() => {
         async function carregarSerie() {
-            const dados = await searchSeriesById(id);
-            setSerie(dados);
+            try{
+                const dados = await searchSeriesById(id);
+                setSerie(dados);
+            } catch (error) {
+                console.error("Erro ao carregar a série:", error);
+            }
         }
         carregarSerie();
     }, [id]);
@@ -27,18 +31,7 @@ function DetalhesSeries() {
         return (
         <div>
             <p>{serie.name}</p>
-            <div>
-                {Array.from({ length: serie.number_of_seasons }, (temporada, i) => (
-                    <div key={i}>
-                        <p >Temporada {i + 1}</p>
-                        <ExibirDetalhesSeason
-                            id = {id}
-                            temporada = {i +1}
-                        />
-                    </div>
-
-                ))}
-            </div>
+            <ExibirDetalhesSeason serie = {serie}/>
         </div>
     );
 
