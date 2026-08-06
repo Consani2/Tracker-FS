@@ -1,18 +1,22 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "../pages/Home.jsx";
 import DetalhesSeries from "../pages/DetalhesSeries.jsx";
+import Login from "../pages/Login.jsx";
+import Registro from "../pages/Registro.jsx";
 
 const AppRoutes = () => {
     return (
-    <BrowserRouter>
         <Routes>
             <Route exact path="/" element={<Home />} />
             <Route exact path ="/serie/:id" element={<DetalhesSeries />} />
+            <Route exact path ="/login" element={<Login/>} />
+            <Route exact path ="/registro" element={<Registro/>} />
+
 
         </Routes>
 
 
-    </BrowserRouter>
+
     )
 }
 export default AppRoutes;

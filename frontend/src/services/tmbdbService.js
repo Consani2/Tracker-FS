@@ -32,6 +32,7 @@ export async function searchSeriesById(id){
     return response.data;
 }
 
+
 export async function carregarDetalhesSeason(id, nmrSeasons){
     let url = `https://api.themoviedb.org/3/tv/${id}/season/`;
     const dados = [];

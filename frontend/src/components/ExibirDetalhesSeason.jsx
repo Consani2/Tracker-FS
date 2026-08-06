@@ -20,7 +20,7 @@ function ExibirDetalhesSeason(props) {
         carregarDados();
 
     }, [props.serie.id, temporadaSelecionada]);
-    console.log("DADOS TEMPORADA: ", dadosTemporada)
+    //console.log("DADOS TEMPORADA: ", dadosTemporada)
 
     return (
         <div>
@@ -56,8 +56,8 @@ function ExibirDetalhesSeason(props) {
                 Número de episódios: {dadosTemporada?.[temporadaSelecionada - 1]?.episodes?.length}
             </h4>
 
-            <p>{dadosTemporada?.overview}</p>
             <div>
+                {/*Mapeia os episódios de cada temporada selecionada pelo utilizador*/}
                 {dadosTemporada?.[temporadaSelecionada - 1]?.episodes?.map((episodio, i) => (
                     <div key={episodio.id}>
                         <input
