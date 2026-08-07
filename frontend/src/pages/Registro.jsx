@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
+import {registrarUtilizador} from "../services/authService.js";
 
 function Registro(){
     const [nome, setNome] = useState("");
     const [senha, setSenha] = useState("");
-    let dados = {}
+    const [listaSeries, setListaSeries] = useState([]);
 
     return(
         <div>
@@ -11,18 +12,7 @@ function Registro(){
             <form onSubmit={e => e.preventDefault()}>
                 <input onChange={(e) => setNome(e.target.value)} type="text" id={"nome"} placeholder="Username" />
                 <input onChange={(e) => setSenha(e.target.value)} type="password" id={"senha"} placeholder="Password" />
-                <button onClick={ () => {
-                    dados = {nome, senha}
-                    if(localStorage.getItem("users")=== null){
-
-                    localStorage.setItem("users", JSON.stringify([dados]));
-                        }
-                    else {
-                        //transforma users em objeto JS, adiciona dados e, por último, transforma-os em ‘String’ para armazenar no localStorage
-                        localStorage.setItem("users", JSON.stringify([...JSON.parse(localStorage.getItem("users")), dados]));
-                    }
-                }
-                } type="submit">Registrar</button>
+                <button onClick={() => registrarUtilizador({nome, senha, listaSeries})} type="submit">Registrar</button>
             </form>
         </div>
 
