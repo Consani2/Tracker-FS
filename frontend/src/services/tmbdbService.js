@@ -3,7 +3,7 @@ import axios from "axios";
 const TOKEN = import.meta.env.VITE_TMDB_BEARER_TOKEN;
 
 
-async function requistar(url, query){
+async function requisitar(url, query){
     return await axios.get(url, {
         params: {
             query: query
@@ -19,7 +19,7 @@ export async function searchSeriesByName(query) {
 
     let url = `https://api.themoviedb.org/3/search/tv`;
 
-    const response = await requistar(url, query)
+    const response = await requisitar(url, query)
     console.log(response.data);
 
     return response.data.results;
@@ -28,19 +28,16 @@ export async function searchSeriesByName(query) {
 
 export async function searchSeriesById(id){
     let url = "https://api.themoviedb.org/3/tv/" + id;
-    const response = await requistar(url);
+    const response = await requisitar(url);
     return response.data;
 }
 
-
-export async function carregarDetalhesSeason(id, nmrSeasons){
-    let url = `https://api.themoviedb.org/3/tv/${id}/season/`;
-    const dados = [];
-    for (let i = 0; i < nmrSeasons ; i++) {
-        const response = await requistar(url + (i +1));
-        dados.push(response.data)
-    }
-    console.log(dados)
+//Recebe ID e o número de temporadas de uma série
+//Retorna um array com os detalhes de cada temporada
+export async function carregarDetalhesSeason(id, nmr_temporada){
+    let url = `https://api.themoviedb.org/3/tv/${id}/season/${nmr_temporada}`;
+    const response = await requisitar(url);
+    console.log(response.data)
     //console.log(response)
-    return dados;
+    return response.data;
 }

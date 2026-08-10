@@ -1,13 +1,20 @@
 import { carregarDetalhesSeason } from "../services/tmbdbService.js";
 import { useEffect, useState } from "react";
 
+//recebe como props a série selecionada pelo utilizador e exibe os detalhes da temporada selecionada, incluindo os episódios.
+// Permite adicionar a série à lista do utilizador no localStorage.
 function ExibirDetalhesSeason(props) {
 
     const [temporadaSelecionada, setTemporadaSelecionada] = useState(1);
     const [dadosTemporada, setDadosTemporada] = useState(null);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const [serieJaExiste, setSerieJaExiste] = useState(currentUser?.listaSeries?.some(
+        (item) => item.id === props.serie.id
+    ));
 
     useEffect(() => {
 
+        //Carrega dados a partir do endpoint utilizando o ID
         async function carregarDados() {
             const resultado = await carregarDetalhesSeason(
                 props.serie.id,
@@ -19,7 +26,7 @@ function ExibirDetalhesSeason(props) {
 
         carregarDados();
 
-    }, [props.serie.id, temporadaSelecionada]);
+    }, [props.serie.id, temporadaSelecionada, serieJaExiste]);
     //console.log("DADOS TEMPORADA: ", dadosTemporada)
 
     return (
@@ -30,15 +37,17 @@ function ExibirDetalhesSeason(props) {
                 <br/>
                 Temporadas: {props.serie.number_of_seasons}
                 <br/>
-                <button onClick={()=>{
-                    //Adiciona a série à lista do utilizador no localStorage
-                    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-                    if (currentUser.listaSeries.includes({id: props.serie.id})) {
-                        alert("Série já está na sua lista.")
-                    } else {
-                        currentUser.listaSeries.push({name: props.serie.name, id: props.serie.id, temporadas: props.serie.number_of_seasons, episodios: props.serie.number_of_episodes});
-                        localStorage.setItem("currentUser", JSON.stringify(currentUser));}
-                }}> Adicionar Série à sua Lista</button>
+                    {!serieJaExiste && (
+                        <button onClick={() => {
+                            // Adiciona a série à lista do utilizador no localStorage
+                            setSerieJaExiste(true);
+                            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+                            currentUser.listaSeries.push({id: props.serie.id, serie: props.serie, temporadas: dadosTemporada});
+                            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+                        }}>
+                            Adicionar Série à sua Lista
+                        </button>
+                    )}
             </section>
 
             <br/>
@@ -63,12 +72,12 @@ function ExibirDetalhesSeason(props) {
 
             <hr/>
             <h4>
-                Número de episódios: {dadosTemporada?.[temporadaSelecionada - 1]?.episodes?.length}
+                Número de episódios: {dadosTemporada?.episodes?.length}
             </h4>
 
             <div>
                 {/*Mapeia os episódios de cada temporada selecionada pelo utilizador*/}
-                {dadosTemporada?.[temporadaSelecionada - 1]?.episodes?.map((episodio, i) => (
+                {dadosTemporada?.episodes?.map((episodio, i) => (
                     <div key={episodio.id}>
                         <input
                             id={`ep-${episodio.id}`}
