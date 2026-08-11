@@ -1,7 +1,7 @@
 import { carregarDetalhesSeason } from "../services/tmbdbService.js";
 import { useEffect, useState } from "react";
 
-//recebe como props a série selecionada pelo utilizador e exibe os detalhes da temporada selecionada, incluindo os episódios.
+//Recebe como props a série selecionada pelo utilizador e exibe os detalhes da temporada selecionada, incluindo os episódios.
 // Permite adicionar a série à lista do utilizador no localStorage.
 function ExibirDetalhesSeason(props) {
 
@@ -11,6 +11,8 @@ function ExibirDetalhesSeason(props) {
     const [serieJaExiste, setSerieJaExiste] = useState(currentUser?.listaSeries?.some(
         (item) => item.id === props.serie.id
     ));
+
+    console.log(dadosTemporada);
 
     useEffect(() => {
 
@@ -26,8 +28,7 @@ function ExibirDetalhesSeason(props) {
 
         carregarDados();
 
-    }, [props.serie.id, temporadaSelecionada, serieJaExiste]);
-    //console.log("DADOS TEMPORADA: ", dadosTemporada)
+    }, [props.serie.id, temporadaSelecionada]);
 
     return (
         <div>
@@ -42,12 +43,26 @@ function ExibirDetalhesSeason(props) {
                             // Adiciona a série à lista do utilizador no localStorage
                             setSerieJaExiste(true);
                             const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-                            currentUser.listaSeries.push({id: props.serie.id, serie: props.serie, temporadas: dadosTemporada});
+                            currentUser.listaSeries.push({id: props.serie.id, nome_serie: props.serie.name, serie: props.serie,
+                                episodios_assistidos: []});
                             localStorage.setItem("currentUser", JSON.stringify(currentUser));
+                            props.setUser(currentUser);
                         }}>
                             Adicionar Série à sua Lista
                         </button>
                     )}
+                {serieJaExiste && (
+                    <button onClick={() => {
+                        // Remove a série da lista do utilizador no localStorage
+                        setSerieJaExiste(false);
+                        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+                        currentUser.listaSeries = currentUser.listaSeries.filter((item) => item.id !== props.serie.id);
+                        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+                        props.setUser(currentUser);
+                    }}>
+                        Remover Série da Lista
+                    </button>
+                )}
             </section>
 
             <br/>
@@ -60,6 +75,7 @@ function ExibirDetalhesSeason(props) {
                     setTemporadaSelecionada(Number(e.target.value))
                 }
             >
+
                 {Array.from(
                     { length: props.serie.number_of_seasons },
                     (_, i) => (
@@ -70,10 +86,13 @@ function ExibirDetalhesSeason(props) {
                 )}
             </select>
 
-            <hr/>
+
             <h4>
                 Número de episódios: {dadosTemporada?.episodes?.length}
             </h4>
+
+            {/*TODO: 1. Adicionar relacionamento entre episódios marcados na checkbox e episódios assistidos no localStorage.
+             */}
 
             <div>
                 {/*Mapeia os episódios de cada temporada selecionada pelo utilizador*/}
@@ -82,6 +101,20 @@ function ExibirDetalhesSeason(props) {
                         <input
                             id={`ep-${episodio.id}`}
                             type="checkbox"
+                            onChange={(e) => {
+                                if (e.target.checked) {
+                                    currentUser.listaSeries[0]?.episodios_assistidos.push({
+                                        temporada: temporadaSelecionada,
+                                        nmr_episodio: episodio.episode_number
+                                    });
+                                    localStorage.setItem("currentUser", JSON.stringify(currentUser))
+                                } else {
+                                    currentUser.listaSeries[0].episodios_assistidos = currentUser.listaSeries[0].episodios_assistidos.filter((ep) =>
+                                        !(ep.temporada === temporadaSelecionada && ep.nmr_episodio === episodio.episode_number)
+                                    );
+                                    localStorage.setItem("currentUser", JSON.stringify(currentUser))
+                                }
+                            }}
                         />
 
                         <span>

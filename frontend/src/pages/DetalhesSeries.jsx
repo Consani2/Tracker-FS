@@ -3,8 +3,7 @@ import {searchSeriesById} from "../services/tmbdbService.js";
 import {useEffect, useState} from "react";
 import ExibirDetalhesSeason from "../components/ExibirDetalhesSeason.jsx";
 
-
-
+//Página de detalhes da série, exibe informações detalhadas sobre a série selecionada pelo utilizador, incluindo temporadas e episódios.
 function DetalhesSeries() {
     const {id} = useParams();
     const[serie, setSerie] = useState(null);
