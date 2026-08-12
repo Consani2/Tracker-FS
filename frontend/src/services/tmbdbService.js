@@ -20,7 +20,7 @@ export async function searchSeriesByName(query) {
     let url = `https://api.themoviedb.org/3/search/tv`;
 
     const response = await requisitar(url, query)
-    console.log(response.data);
+    //console.log(response.data);
 
     return response.data.results;
 
@@ -37,7 +37,7 @@ export async function searchSeriesById(id){
 export async function carregarDetalhesSeason(id, nmr_temporada){
     let url = `https://api.themoviedb.org/3/tv/${id}/season/${nmr_temporada}`;
     const response = await requisitar(url);
-    console.log(response.data)
+    //console.log(response.data)
     //console.log(response)
     return response.data;
 }

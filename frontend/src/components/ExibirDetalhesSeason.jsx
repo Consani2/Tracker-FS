@@ -12,7 +12,14 @@ function ExibirDetalhesSeason(props) {
         (item) => item.id === props.serie.id
     ));
 
-    console.log(dadosTemporada);
+    const serieAtual = currentUser.listaSeries.find(
+        item => item.id === props.serie.id);
+
+    const [episodiosAssistidos, setEpisodiosAssistidos] = useState(
+        serieAtual?.episodios_assistidos || []
+    );
+
+    //console.log(dadosTemporada);
 
     useEffect(() => {
 
@@ -38,25 +45,37 @@ function ExibirDetalhesSeason(props) {
                 <br/>
                 Temporadas: {props.serie.number_of_seasons}
                 <br/>
-                    {!serieJaExiste && (
-                        <button onClick={() => {
-                            // Adiciona a série à lista do utilizador no localStorage
-                            setSerieJaExiste(true);
-                            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-                            currentUser.listaSeries.push({id: props.serie.id, nome_serie: props.serie.name, serie: props.serie,
-                                episodios_assistidos: []});
-                            localStorage.setItem("currentUser", JSON.stringify(currentUser));
-                            props.setUser(currentUser);
-                        }}>
-                            Adicionar Série à sua Lista
-                        </button>
-                    )}
+
+                {!serieJaExiste && (
+                    <button onClick={() => {
+                        // Adiciona a série à lista do utilizador no localStorage
+                        setSerieJaExiste(true);
+                        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+                        currentUser.listaSeries.push({
+                            id: props.serie.id,
+                            nome_serie: props.serie.name,
+                            serie: props.serie,
+                            episodios_assistidos: []
+                        });
+
+                        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+                        props.setUser(currentUser);
+                    }}>
+                        Adicionar Série à sua Lista
+                    </button>
+                )}
+
                 {serieJaExiste && (
                     <button onClick={() => {
                         // Remove a série da lista do utilizador no localStorage
                         setSerieJaExiste(false);
                         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-                        currentUser.listaSeries = currentUser.listaSeries.filter((item) => item.id !== props.serie.id);
+
+                        currentUser.listaSeries = currentUser.listaSeries.filter(
+                            (item) => item.id !== props.serie.id
+                        );
+
                         localStorage.setItem("currentUser", JSON.stringify(currentUser));
                         props.setUser(currentUser);
                     }}>
@@ -86,7 +105,6 @@ function ExibirDetalhesSeason(props) {
                 )}
             </select>
 
-
             <h4>
                 Número de episódios: {dadosTemporada?.episodes?.length}
             </h4>
@@ -101,19 +119,48 @@ function ExibirDetalhesSeason(props) {
                         <input
                             id={`ep-${episodio.id}`}
                             type="checkbox"
+                            checked={episodiosAssistidos.some((ep) =>
+                                ep.temporada === temporadaSelecionada &&
+                                ep.nmr_episodio === episodio.episode_number
+                            )}
                             onChange={(e) => {
-                                if (e.target.checked) {
-                                    currentUser.listaSeries[0]?.episodios_assistidos.push({
-                                        temporada: temporadaSelecionada,
-                                        nmr_episodio: episodio.episode_number
-                                    });
-                                    localStorage.setItem("currentUser", JSON.stringify(currentUser))
-                                } else {
-                                    currentUser.listaSeries[0].episodios_assistidos = currentUser.listaSeries[0].episodios_assistidos.filter((ep) =>
-                                        !(ep.temporada === temporadaSelecionada && ep.nmr_episodio === episodio.episode_number)
-                                    );
-                                    localStorage.setItem("currentUser", JSON.stringify(currentUser))
+                                if (!serieAtual) {
+                                    alert("Adicione a série à sua lista antes de marcar episódios como assistidos.");
+                                    return;
                                 }
+
+                                let novaLista;
+
+                                if (e.target.checked) {
+
+                                    novaLista = [
+                                        ...episodiosAssistidos,
+                                        {
+                                            temporada: temporadaSelecionada,
+                                            nmr_episodio: episodio.episode_number
+                                        }
+                                    ];
+
+                                } else {
+                                    novaLista = episodiosAssistidos.filter((ep) =>
+                                        !(
+                                            ep.temporada === temporadaSelecionada &&
+                                            ep.nmr_episodio === episodio.episode_number
+                                        )
+                                    );
+                                }
+
+                                setEpisodiosAssistidos(novaLista);
+                                serieAtual.episodios_assistidos = novaLista;
+                                //console.log("serie atual: ",serieAtual);
+                                //console.log("nova lista", novaLista)
+
+                                currentUser.listaSeries = currentUser.listaSeries.map(
+                                    serie => serie.id === serieAtual.id
+                                        ? serieAtual
+                                        : serie
+                                );
+                                localStorage.setItem("currentUser", JSON.stringify(currentUser));
                             }}
                         />
 
