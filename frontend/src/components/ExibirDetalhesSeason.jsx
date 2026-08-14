@@ -3,14 +3,23 @@ import { useEffect, useState } from "react";
 
 //Recebe como props a série selecionada pelo utilizador e exibe os detalhes da temporada selecionada, incluindo os episódios.
 // Permite adicionar a série à lista do utilizador no localStorage.
+function getCurrentUser() {
+    return JSON.parse(localStorage.getItem("currentUser"));
+}
+
+
 function ExibirDetalhesSeason(props) {
 
     const [temporadaSelecionada, setTemporadaSelecionada] = useState(1);
     const [dadosTemporada, setDadosTemporada] = useState(null);
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const currentUser = getCurrentUser();
+
+    console.log("currentUser Lista series", currentUser.listaSeries)
+    console.log("É array ? ", Array.isArray(currentUser.listaSeries))
     const [serieJaExiste, setSerieJaExiste] = useState(currentUser?.listaSeries?.some(
         (item) => item.id === props.serie.id
     ));
+    const [todosEpAtivo, setTodosEpAtivo] = useState(false);
 
     const serieAtual = currentUser.listaSeries.find(
         item => item.id === props.serie.id);
@@ -19,7 +28,10 @@ function ExibirDetalhesSeason(props) {
         serieAtual?.episodios_assistidos || []
     );
 
-    //console.log(dadosTemporada);
+    //console.log(episodiosAssistidos);
+    //console.log(dadosTemporada)
+
+    console.log("episodiosAssistidos", episodiosAssistidos);
 
     useEffect(() => {
 
@@ -37,6 +49,19 @@ function ExibirDetalhesSeason(props) {
 
     }, [props.serie.id, temporadaSelecionada]);
 
+    function adicionarSerieListaUser(currentUser){
+        currentUser.listaSeries.push({
+            id: props.serie.id,
+            nome_serie: props.serie.name,
+            serie: props.serie,
+            episodios_assistidos: []
+        });
+
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        props.setUser(currentUser);
+        return currentUser;
+    }
+
     return (
         <div>
 
@@ -50,17 +75,8 @@ function ExibirDetalhesSeason(props) {
                     <button onClick={() => {
                         // Adiciona a série à lista do utilizador no localStorage
                         setSerieJaExiste(true);
-                        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-                        currentUser.listaSeries.push({
-                            id: props.serie.id,
-                            nome_serie: props.serie.name,
-                            serie: props.serie,
-                            episodios_assistidos: []
-                        });
-
-                        localStorage.setItem("currentUser", JSON.stringify(currentUser));
-                        props.setUser(currentUser);
+                        const currentUser = getCurrentUser();
+                        adicionarSerieListaUser(currentUser);
                     }}>
                         Adicionar Série à sua Lista
                     </button>
@@ -70,7 +86,7 @@ function ExibirDetalhesSeason(props) {
                     <button onClick={() => {
                         // Remove a série da lista do utilizador no localStorage
                         setSerieJaExiste(false);
-                        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+                        const currentUser = getCurrentUser();
 
                         currentUser.listaSeries = currentUser.listaSeries.filter(
                             (item) => item.id !== props.serie.id
@@ -104,13 +120,49 @@ function ExibirDetalhesSeason(props) {
                     )
                 )}
             </select>
+            <br/>
+            { !todosEpAtivo && (
+                <button onClick={() =>  {
+                if(!serieAtual){
+                alert("Adicione a série à sua lista antes de marcar episódios como assistidos.");
+                return;
+            }
+
+                const novaLista = Array.from({ length: dadosTemporada?.episodes.length },
+                    (_, i) => ({
+                        temporada: temporadaSelecionada,
+                        nmr_episodio: dadosTemporada?.episodes[i]?.episode_number
+                        })
+                    );
+                setEpisodiosAssistidos(novaLista);
+                setTodosEpAtivo(true);
+
+                currentUser.listaSeries = currentUser.listaSeries.map(
+                    (serie) =>
+                        serie.id === serieAtual.id
+                            ? {...serie, episodios_assistidos: novaLista}
+                            : serie
+                )
+
+                localStorage.setItem("currentUser", JSON.stringify(currentUser));
+                //console.log(serieAtual);
+
+            }}>Marcar Temporada como Assistida</button>
+            )}
+            {todosEpAtivo && (
+                <button onClick={()=>{
+                    setTodosEpAtivo(false);
+                    setEpisodiosAssistidos([]);
+                    serieAtual.episodios_assistidos = [];
+                    console.log(serieAtual);
+                    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+                }
+                }>Desmarcar Temporada</button>
+            )}
 
             <h4>
                 Número de episódios: {dadosTemporada?.episodes?.length}
             </h4>
-
-            {/*TODO: 1. Adicionar relacionamento entre episódios marcados na checkbox e episódios assistidos no localStorage.
-             */}
 
             <div>
                 {/*Mapeia os episódios de cada temporada selecionada pelo utilizador*/}
@@ -176,5 +228,6 @@ function ExibirDetalhesSeason(props) {
         </div>
     );
 }
+
 
 export default ExibirDetalhesSeason;
