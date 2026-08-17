@@ -14,8 +14,6 @@ function ExibirDetalhesSeason(props) {
     const [dadosTemporada, setDadosTemporada] = useState(null);
     const currentUser = getCurrentUser();
 
-    console.log("currentUser Lista series", currentUser.listaSeries)
-    console.log("É array ? ", Array.isArray(currentUser.listaSeries))
     const [serieJaExiste, setSerieJaExiste] = useState(currentUser?.listaSeries?.some(
         (item) => item.id === props.serie.id
     ));
@@ -27,11 +25,6 @@ function ExibirDetalhesSeason(props) {
     const [episodiosAssistidos, setEpisodiosAssistidos] = useState(
         serieAtual?.episodios_assistidos || []
     );
-
-    //console.log(episodiosAssistidos);
-    //console.log(dadosTemporada)
-
-    console.log("episodiosAssistidos", episodiosAssistidos);
 
     useEffect(() => {
 
@@ -145,7 +138,6 @@ function ExibirDetalhesSeason(props) {
                 )
 
                 localStorage.setItem("currentUser", JSON.stringify(currentUser));
-                //console.log(serieAtual);
 
             }}>Marcar Temporada como Assistida</button>
             )}
@@ -154,7 +146,6 @@ function ExibirDetalhesSeason(props) {
                     setTodosEpAtivo(false);
                     setEpisodiosAssistidos([]);
                     serieAtual.episodios_assistidos = [];
-                    console.log(serieAtual);
                     localStorage.setItem("currentUser", JSON.stringify(currentUser));
                 }
                 }>Desmarcar Temporada</button>
@@ -204,8 +195,7 @@ function ExibirDetalhesSeason(props) {
 
                                 setEpisodiosAssistidos(novaLista);
                                 serieAtual.episodios_assistidos = novaLista;
-                                //console.log("serie atual: ",serieAtual);
-                                //console.log("nova lista", novaLista)
+
 
                                 currentUser.listaSeries = currentUser.listaSeries.map(
                                     serie => serie.id === serieAtual.id
