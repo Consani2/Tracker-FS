@@ -1,4 +1,4 @@
-import {criarUtilizador} from "../repositorio/userRepository.js";
+import {criarUtilizador, findByName} from "../repositorio/userRepository.js";
 
 /**
  * @param {string} username - Username do utilizador.
@@ -15,7 +15,25 @@ export async function registrarUtilizador(username, password) {
 //o
 
 
-//TODO: Adicionar lógica de verificação login
+/**
+ * Autentica um utilizador através do nome de utilizador e da palavra-passe.
+ *
+ * @param {string} username - Nome de utilizador utilizado para localizar a conta.
+ * @param {string} senha - Palavra-passe fornecida para autenticação.
+ * @returns {Promise<{
+ *     id: number,
+ *     username: string
+ * }>} Dados do utilizador autenticado.
+ * @throws {Error} Se o utilizador não for encontrado.
+ * @throws {Error} Se a palavra-passe fornecida for inválida.
+ */
 export async function logar(username, senha){
-
+    const user = await findByName(username);
+    console.log("resultado: ", user);
+    if(!user){
+        throw new Error("Utilizador não encontrado");
+    }
+    if(user && senha === user.password){
+        return user;
+    }
 }

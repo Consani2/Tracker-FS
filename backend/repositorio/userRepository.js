@@ -11,14 +11,13 @@ export async function criarUtilizador(username, senha){
 }
 export async function findByName(username){
     const resultado =  await pool.query(
-        `SELECT * FROM users WHERE username = $1 
-            RETURNING id, username`,
+        `SELECT * FROM users WHERE username = $1`,
         [username]
     );
     if (resultado.rows.length === 0){
         return false
     }
     else {
-        return resultado;
+        return resultado.rows[0];
     }
 }
