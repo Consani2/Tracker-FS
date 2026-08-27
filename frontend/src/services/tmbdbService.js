@@ -35,9 +35,6 @@ export async function searchSeriesById(id){
 //Recebe ID e o número de temporadas de uma série
 //Retorna um array com os detalhes de cada temporada
 export async function carregarDetalhesSeason(id, nmr_temporada){
-    let url = `https://api.themoviedb.org/3/tv/${id}/season/${nmr_temporada}`;
-    const response = await requisitar(url);
-    //console.log(response.data)
-    //console.log(response)
-    return response.data;
+    let url = `http://localhost:3000/api/serie/${id}/temporada/${nmr_temporada}`;
+    return  await fetch(url);
 }

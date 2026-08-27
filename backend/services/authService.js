@@ -22,7 +22,8 @@ export async function registrarUtilizador(username, password) {
  * @param {string} senha - Palavra-passe fornecida para autenticação.
  * @returns {Promise<{
  *     id: number,
- *     username: string
+ *     username: string,
+ *     password: string
  * }>} Dados do utilizador autenticado.
  * @throws {Error} Se o utilizador não for encontrado.
  * @throws {Error} Se a palavra-passe fornecida for inválida.

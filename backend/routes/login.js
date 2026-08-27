@@ -2,28 +2,26 @@ import express, {response} from "express";
 import {logar} from "../services/authService.js";
 
 const router = express.Router();
-router.get("/login", (req, res) => {
-    const username = req.query.nomeLogin
-    const password = req.query.senhaLogin;
+router.post("/login", async (req, res) => {
+    try {
+        const user = await logar(
+            req.query.nomeLogin,
+            req.query.senhaLogin
+        );
+        req.session.userId = user.id
+        res.status(200).json({
+            mensagem: "Login realizado com sucesso!",
+            user
+        })
 
-    /*TODO:
-       1. Criar variável user
-       2. Atribuir ao valor de retorno da função logar()
-       3. Colocar toda a lógica dentro do try()*/
+    } catch (erro) {
+        res.status(500).json( {
+            mensagem: erro.message
 
-    logar(username, password)
-        .then((obj) => (
-            res.json({
-                mensagem: "Login realizado com sucesso!",
-                user: obj
-            })
-        ))
-        .catch((err)=> {
-            res.status(500).json({
-                mensagem: "Erro ao realizar login.",
-                erro: err.message
-            })
-        });
+        })
+        console.log("ERROR: ", erro)
+    }
+
 
 })
 

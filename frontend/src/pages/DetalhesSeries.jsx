@@ -7,7 +7,6 @@ import ExibirDetalhesSeason from "../components/ExibirDetalhesSeason.jsx";
 function DetalhesSeries() {
     const {id} = useParams();
     const[serie, setSerie] = useState(null);
-    let count = 0;
 
     useEffect(() => {
         async function carregarSerie() {
