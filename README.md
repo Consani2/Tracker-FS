@@ -124,14 +124,3 @@ VITE_TMDB_API_KEY=abcd1234efgh5678
 Ensure .env is excluded from version control (add to .gitignore).
 
 ---
-
-## Contributing
-
-Contributions are welcome. Please open issues or pull requests with clear descriptions of changes.
-
----
-
-## License
-
-Add your project license here.
-
