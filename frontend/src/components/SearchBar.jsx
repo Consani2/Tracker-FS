@@ -1,4 +1,4 @@
-import {searchSeriesByName} from "../services/tmbdbService";
+import {searchSeriesByName} from "../services/apiService.js";
 
 function SearchBar({ onSearch }) {
 

@@ -1,4 +1,4 @@
-import { carregarDetalhesSeason } from "../services/tmbdbService.js";
+import { carregarDetalhesSeason } from "../services/apiService.js";
 import { useEffect, useState } from "react";
 
 //Recebe como props a série selecionada pelo utilizador e exibe os detalhes da temporada selecionada, incluindo os episódios.

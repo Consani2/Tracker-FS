@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {searchSeriesById} from "../services/tmbdbService.js";
+import {searchSeriesById} from "../services/apiService.js";
 import {useEffect, useState} from "react";
 import ExibirDetalhesSeason from "../components/ExibirDetalhesSeason.jsx";
 

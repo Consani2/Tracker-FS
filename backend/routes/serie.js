@@ -1,5 +1,6 @@
 import express from "express";
-import {carregarDetalhesSeason} from "../services/tmdbApiService.js";
+import {carregarDetalhesSeason, searchByName} from "../services/tmdbApiService.js";
+import {searchSeriesByName} from "../../frontend/src/services/apiService.js";
 
 const router = express.Router();
 
@@ -16,6 +17,13 @@ router.get("/serie/:id/temporada/:nmrTemporada", async (req, res) => {
         res.status(500).json({
             mensagem: "Erro ao carregarDetalhes servidor!", error});
     }
+})
+
+router.get("/serie/:nomeSerie", async (req, res) => {
+    const {nomeSerie} = req.params;
+    const resultados = await searchByName(nomeSerie);
+    res.json(resultados);
+
 })
 
 export default router;

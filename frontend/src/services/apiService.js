@@ -1,0 +1,34 @@
+import axios from "axios";
+
+
+async function requisitar(url, query){
+    return await axios.get(url, {
+        params: {
+            query: query
+        },
+        headers: {
+            Authorization: `Bearer ${TOKEN}`,
+        }
+
+    })
+}
+
+export async function searchSeriesByName(query) {
+
+    let url = `http://localhost:3000/api/serie/${query}`;
+    const response = await fetch(url);
+    return await response.json();
+    }
+
+export async function searchSeriesById(id){
+    let url = "https://api.themoviedb.org/3/tv/" + id;
+    const response = await requisitar(url);
+    return response.data;
+}
+
+//Recebe ID e o número de temporadas de uma série
+//Retorna um array com os detalhes de cada temporada
+export async function carregarDetalhesSeason(id, nmr_temporada){
+    let url = `http://localhost:3000/api/serie/${id}/temporada/${nmr_temporada}`;
+    return  await fetch(url);
+}

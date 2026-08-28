@@ -3,8 +3,8 @@ import SeriesCard from "./SeriesCard.jsx";
 
 
 function ExibirSeries({series}) {
-
-    return <>{series.map((serie) => (
+    console.log(series);
+    return <>{series?.results?.map((serie) => (
          <SeriesCard key={serie.id} series={serie} />
     ))}</>
 }
