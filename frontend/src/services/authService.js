@@ -14,7 +14,6 @@ export function registrarUtilizador(nome, senha){
 
 }
 
-//TODO: Adicionar requisição HTTP login (GET)
 export function logar(nomeLogin, senhaLogin) {
     console.log("Logar foi clicado com sucesso", nomeLogin, senhaLogin)
     const url = `http://localhost:3000/api/login?nomeLogin=${nomeLogin}&senhaLogin=${senhaLogin}`

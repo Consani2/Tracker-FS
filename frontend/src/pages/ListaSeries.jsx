@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ExibirDetalhesSeason from "../components/ExibirDetalhesSeason.jsx";
+import ExibirEpsTemporada from "../components/ExibirEpsTemporada.jsx";
 
 // Página que exibe a lista de séries do utilizador, permitindo selecionar temporadas e visualizar detalhes de cada série.
 function ListaSeries() {
@@ -18,7 +18,7 @@ function ListaSeries() {
                                   Nome da Série: {dado.serie.name}
                               </h2>
 
-                              <ExibirDetalhesSeason
+                              <ExibirEpsTemporada
                                   serie={dado.serie}
                                   setUser={setUser}
                               />

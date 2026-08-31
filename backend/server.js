@@ -3,6 +3,7 @@ import cors from "cors";
 import registroRouter from "./routes/registro.js";
 import loginRouter from "./routes/login.js"
 import serieRouter  from "./routes/serie.js"
+import userRouter from "./routes/user.js"
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple"
 import pool from "./db.js";
@@ -29,7 +30,7 @@ app.use(express.json());
 app.use("/api", registroRouter);
 app.use("/api", loginRouter);
 app.use("/api", serieRouter);
-
+app.use("/api", userRouter)
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000");
 });
