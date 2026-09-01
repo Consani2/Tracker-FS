@@ -9,7 +9,7 @@ router.get("/serie/:id/temporada/:nmrTemporada", async (req, res) => {
         const {id, nmrTemporada} = req.params;
 
         const temporada = await carregarDetalhesSeason(id, nmrTemporada);
-        console.log("Dados Temporada: ", temporada);
+        //console.log("Dados Temporada: ", temporada);
 
         res.status(200).json(temporada);
 
