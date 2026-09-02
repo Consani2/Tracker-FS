@@ -11,6 +11,7 @@ export async function adicionarSerie({dados_serie}){
         headers: {
             "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({dados_serie}),
     })
 }

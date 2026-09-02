@@ -1,4 +1,5 @@
 import pool from "../db.js";
+import {adicionarSerie, findSerieById} from "./serieRepository.js";
 
 //Retorna objeto user: id, username
 export async function criarUtilizador(username, senha){
@@ -22,19 +23,33 @@ export async function findByName(username){
     }
 }
 
+/**
+ *
+ * @param userId
+ * @param id_serie
+ * @param dados_serie
+ * @returns {Promise<*>}
+ */
 export async function adicionarSerieLista(userId, id_serie, dados_serie){
-    let resultado = await pool.query(
+
+    let resultado = await findSerieById(id_serie);
+
+    if(!resultado){
+        await adicionarSerie(id_serie, dados_serie);
+    }
+
+    let query = await pool.query(
         `SELECT * FROM user_series 
          WHERE user_id = $1 
            AND series_id = $2`,
         [userId, id_serie]
     )
-    if (resultado.rows.length === 0){
-        resultado = await pool.query(
+    if (query.rows.length === 0){
+        query = await pool.query(
             `INSERT INTO user_series (user_id, series_id, dados_serie) 
              VALUES ($1, $2, $3)`,
             [userId, id_serie, dados_serie]
         )
     }
-    return resultado.rows[0];
+    return query.rows[0];
 }

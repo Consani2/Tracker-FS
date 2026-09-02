@@ -15,9 +15,9 @@ export function registrarUtilizador(nome, senha){
 }
 
 export function logar(nomeLogin, senhaLogin) {
-    console.log("Logar foi clicado com sucesso", nomeLogin, senhaLogin)
+    //console.log("Logar foi clicado com sucesso", nomeLogin, senhaLogin)
     const url = `http://localhost:3000/api/login?nomeLogin=${nomeLogin}&senhaLogin=${senhaLogin}`
-    //Captura utilizadores registados no localStorage e procura um utilizador com o mesmo nome e senha.
+
     fetch(url, {
         method: "POST",
         credentials:  "include"
