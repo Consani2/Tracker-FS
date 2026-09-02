@@ -1,32 +1,26 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import ExibirEpsTemporada from "../components/ExibirEpsTemporada.jsx";
+import {obterUtilizadorLogado} from "../services/userService.js";
 
 // Página que exibe a lista de séries do utilizador, permitindo selecionar temporadas e visualizar detalhes de cada série.
 function ListaSeries() {
-    const [user, setUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        async function carregarUtilizador(){
+            const utilizador = await obterUtilizadorLogado();
+            console.log(utilizador);
+            setUser(utilizador);
+        }
+        carregarUtilizador();
+    }, [])
 
     return (
         <>
             <h1>Sua Lista de Séries</h1>
 
             <>
-                {user.listaSeries?.length > 0
-                    ? user.listaSeries.map((dado) => (
-                          <div key={dado.serie.id}>
-                              <hr/>
-                              <h2>
-                                  Nome da Série: {dado.serie.name}
-                              </h2>
-
-                              <ExibirEpsTemporada
-                                  serie={dado.serie}
-                                  setUser={setUser}
-                              />
-                          </div>
-                      ))
-                    : (
-                          <p>Você não possui séries na sua lista.</p>
-                      )}
+                Em construção. Utilizador: {user}
             </>
         </>
     );

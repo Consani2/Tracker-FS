@@ -1,4 +1,4 @@
-import {adicionarSerieLista} from "../repositorio/userRepository.js";
+import {adicionarSerieLista, findUserById} from "../repositorio/userRepository.js";
 
 
 export async function adicionarSerie(userId, id_serie, dados_serie) {
@@ -8,4 +8,11 @@ export async function adicionarSerie(userId, id_serie, dados_serie) {
         console.log("Falha ao adicionar série a lista! Erro: ", erro.message)
     }
 
+}
+export async function obterUtilizador(user_id){
+    try {
+        return await findUserById(user_id);
+    } catch (err){
+        console.log(err);
+    }
 }
