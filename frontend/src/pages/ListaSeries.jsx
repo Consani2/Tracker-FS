@@ -1,29 +1,36 @@
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import ExibirEpsTemporada from "../components/ExibirEpsTemporada.jsx";
-import {obterUtilizadorLogado} from "../services/userService.js";
+import {listarSerieUser, obterUtilizadorLogado} from "../services/userService.js";
+import {AuthContext} from "../contexts/AuthContext.jsx";
 
 // Página que exibe a lista de séries do utilizador, permitindo selecionar temporadas e visualizar detalhes de cada série.
 function ListaSeries() {
-    const [user, setUser] = useState(null);
-
+    const {user} = useContext(AuthContext);
+    const [dados_series, setDadosSeries] = useState(null)
     useEffect(() => {
-        async function carregarUtilizador(){
-            const utilizador = await obterUtilizadorLogado();
-            console.log(utilizador);
-            setUser(utilizador);
+        async function carregarDadosLista(){
+            const resp = await listarSerieUser();
+            console.log("Response: ", resp);
+            setDadosSeries(resp)
         }
-        carregarUtilizador();
+
+        carregarDadosLista();
     }, [])
+    if(!dados_series){
+        return <p>Carregando...</p>
+    }
 
     return (
         <>
             <h1>Sua Lista de Séries</h1>
 
             <>
-                Em construção. Utilizador: {user}
+                Em construção. ID Utilizador: {user?.id} | Nome Utilizador: {user?.username}
             </>
+            <p>
+                {typeof dados_series}
+            </p>
         </>
     );
 }
-
 export default ListaSeries;

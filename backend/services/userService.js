@@ -1,4 +1,4 @@
-import {adicionarSerieLista, findUserById} from "../repositorio/userRepository.js";
+import {adicionarSerieLista, findUserById, obterUserSeries} from "../repositorio/userRepository.js";
 
 
 export async function adicionarSerie(userId, id_serie, dados_serie) {
@@ -15,4 +15,7 @@ export async function obterUtilizador(user_id){
     } catch (err){
         console.log(err);
     }
+}
+export async function obterListaSeries(userId){
+    return await obterUserSeries(userId);
 }

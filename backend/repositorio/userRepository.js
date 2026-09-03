@@ -55,11 +55,24 @@ export async function adicionarSerieLista(userId, id_serie, dados_serie){
 }
 export async function findUserById(user_id){
     const resultado = await pool.query(
-        `SELECT * FROM users WHERE user_id = $1`,
+        `SELECT id, username FROM users WHERE id = $1`,
         [user_id]
     )
     if (resultado.rows.length === 0){
         throw new Error("Utilizador não encontrado");
     }
     return resultado.rows[0];
+}
+export async function obterUserSeries(user_id){
+    console.log("User id," , user_id);
+    const query = await pool.query(
+        `SELECT * FROM user_series 
+         WHERE user_id = $1 `,
+        [user_id]
+    )
+    console.log(query.rows);
+    if (query.rows.length === 0){
+        throw new Error("Não há séries na lista.")
+    }
+    return query.rows[0];
 }

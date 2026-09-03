@@ -1,5 +1,5 @@
 import express from "express";
-import {adicionarSerie, obterUtilizador} from "../services/userService.js";
+import {adicionarSerie, obterListaSeries, obterUtilizador} from "../services/userService.js";
 import {obterUtilizadorLogado} from "../../frontend/src/services/userService.js";
 import {findSerieById} from "../repositorio/serieRepository.js";
 
@@ -29,5 +29,14 @@ router.get("/user/me", async (req, res) => {
     res.status(200).json(user);
     console.log("User: ", user)
 })
-
+router.get("/user/series", async (req, res) => {
+    const userId = req.session.userId
+    const series = await obterListaSeries(userId);
+    if(!userId){
+        res.status(401).json({
+            autenticado: false
+        })
+    }
+    res.status(200).json(series)
+})
 export default router;
