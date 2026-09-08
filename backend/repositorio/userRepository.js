@@ -70,9 +70,9 @@ export async function obterUserSeries(user_id){
          WHERE user_id = $1 `,
         [user_id]
     )
-    console.log(query.rows);
+    //console.log(query.rows);
     if (query.rows.length === 0){
         throw new Error("Não há séries na lista.")
     }
-    return query.rows[0];
+    return query.rows;
 }

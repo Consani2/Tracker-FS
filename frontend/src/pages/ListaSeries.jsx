@@ -4,6 +4,7 @@ import {listarSerieUser, obterUtilizadorLogado} from "../services/userService.js
 import {AuthContext} from "../contexts/AuthContext.jsx";
 
 // Página que exibe a lista de séries do utilizador, permitindo selecionar temporadas e visualizar detalhes de cada série.
+//:TODO: Continuar Implementação
 function ListaSeries() {
     const {user} = useContext(AuthContext);
     const [dados_series, setDadosSeries] = useState(null)
@@ -27,9 +28,14 @@ function ListaSeries() {
             <>
                 Em construção. ID Utilizador: {user?.id} | Nome Utilizador: {user?.username}
             </>
-            <p>
-                {typeof dados_series}
-            </p>
+            <>{dados_series?.series.map((serie)=>(
+                <div key={serie?.series_id}>
+                    <h2 >{serie.dados_serie?.nome_serie}</h2>
+                    <p>oi</p>
+                </div>
+                ))}
+            </>
+
         </>
     );
 }

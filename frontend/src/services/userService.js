@@ -1,4 +1,3 @@
-//TODO: Implementar função
 export async function listarSerieUser(){
     const response = await fetch("http://localhost:3000/api/user/series", {
         credentials: "include"
