@@ -9,14 +9,16 @@ const router = express.Router()
 router.post("/user/series/:serie_id", async (req, res) => {
     const userId = req.session.userId
     const {serie_id} = req.params;
+    //console.log(userId);
     //console.log("BODY: ", req.body)
     //console.log("User id: ", userId);
-    const {dados_serie} = req.body
+    const {serie} = req.body
+    console.log("Dados Serie: ", serie)
     //console.log("Tipo dados_serie: ", typeof dados_serie);
-    await adicionarSerie(userId, serie_id, dados_serie);
+    await adicionarSerie(userId, serie_id, serie);
     res.status(200).json({
         success: true,
-        mensagem: `Série ${dados_serie.nome_serie} adicionada com sucesso!`
+        mensagem: `Série ${serie.name} adicionada com sucesso!`
     })
 })
 router.get("/user/me", async (req, res) => {

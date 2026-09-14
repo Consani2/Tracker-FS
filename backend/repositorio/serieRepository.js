@@ -3,7 +3,7 @@ import pool from "../db.js";
 export async function adicionarSerie(serie_id, dados_serie){
     const resultado = await pool.query(
         `INSERT INTO series VALUES($1, $2, $3)`,
-        [serie_id, dados_serie.nome_serie, dados_serie]
+        [serie_id, dados_serie.name, dados_serie]
     )
     return resultado.rows[0]
 }

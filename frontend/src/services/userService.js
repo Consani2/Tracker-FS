@@ -11,16 +11,18 @@ export async function listarSerieUser(){
 }
 
 export async function adicionarSerie({dados_serie}){
-    //console.log(dados_serie);
-    const url = `http://localhost:3000/api/user/series/${dados_serie.id}`
+    const serie = dados_serie.dados_serie
+    console.log("Dados série: ", serie);
+    const url = `http://localhost:3000/api/user/series/${serie.id}`
     const response = await fetch(url, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({dados_serie}),
+        body: JSON.stringify({serie}),
     })
+    console.log(await response.json())
     return await response.json();
 }
 export async function obterUtilizadorLogado(){

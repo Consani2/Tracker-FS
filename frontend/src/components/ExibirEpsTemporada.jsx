@@ -15,6 +15,7 @@ function ExibirEpsTemporada(props) {
     const [listaUser, setListaUser] = useState([]);
     const serie = props.serie
     const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
+    //console.log("Dados Temp: ", dadosTemporada)
     //console.log(serieJaExiste);
     //console.log("Lista user", listaUser)
 
@@ -46,14 +47,15 @@ function ExibirEpsTemporada(props) {
 
     }, [serie.id, temporadaSelecionada]);
 
-    function adicionarSerieListaUser(){
+    async function adicionarSerieListaUser(){
         const dados_serie = {
-            id: serie.id,
-            nome_serie: serie.name,
-            serie: serie,
-            episodios_assistidos: []
+            dados_serie: serie,
+            eps_por_temporada: dadosTemporada
         }
-        adicionarSerie({dados_serie});
+        await adicionarSerie({dados_serie});
+
+        const dados = await listarSerieUser()
+        setListaUser(dados);
     }
 
 
@@ -68,7 +70,6 @@ function ExibirEpsTemporada(props) {
 
                 {!serieJaExiste && (
                     <button onClick={() => {
-                        setSerieJaExiste(true);
                         adicionarSerieListaUser()
                     }}>
                         Adicionar Série à sua Lista
@@ -77,8 +78,7 @@ function ExibirEpsTemporada(props) {
 
                 {serieJaExiste && (
                     <button onClick={() => {
-                        // Remove a série da lista do utilizador
-                        setSerieJaExiste(false);
+                        //TODO: Implementar - Remove a série da lista do utilizador
                     }}>
                         Remover Série da Lista
                     </button>
@@ -151,7 +151,7 @@ function ExibirEpsTemporada(props) {
                 {/*Mapeia os episódios de cada temporada selecionada pelo utilizador*/}
                 {dadosTemporada?.episodes?.map((episodio, i) => (
                     <div key={episodio.id}>
-                        <input
+                        <input type={"checkbox"}
                         />
 
                         <span>

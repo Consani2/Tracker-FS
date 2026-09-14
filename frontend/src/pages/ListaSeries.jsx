@@ -30,8 +30,7 @@ function ListaSeries() {
             </>
             <>{dados_series?.series.map((serie)=>(
                 <div key={serie?.series_id}>
-                    <h2 >{serie.dados_serie?.nome_serie}</h2>
-                    <p>oi</p>
+                    <ExibirEpsTemporada serie = {serie}/>
                 </div>
                 ))}
             </>
