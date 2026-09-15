@@ -6,7 +6,7 @@ export async function searchSeriesByName(query) {
     }
 
 export async function searchSeriesById(id){
-    console.log("ID: ", id)
+    //console.log("ID: ", id)
     let url = `http://localhost:3000/api/serie/${id}`
     return await fetch(url, {
         method: "GET"

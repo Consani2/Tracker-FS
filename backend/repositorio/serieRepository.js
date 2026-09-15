@@ -1,9 +1,11 @@
 import pool from "../db.js";
 
-export async function adicionarSerie(serie_id, dados_serie){
+export async function adicionarSerie(serie_id, dados_serie, ){
+    //console.log("Serie: ", serie);
+    console.log("NOME DADOS SÉRIE BD: ", dados_serie.name)
     const resultado = await pool.query(
         `INSERT INTO series VALUES($1, $2, $3)`,
-        [serie_id, dados_serie.name, dados_serie]
+        [serie_id, dados_serie.name, {dados_serie}]
     )
     return resultado.rows[0]
 }

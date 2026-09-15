@@ -10,17 +10,17 @@ export async function listarSerieUser(){
     return dados;
 }
 
-export async function adicionarSerie({dados_serie}){
-    const serie = dados_serie.dados_serie
-    console.log("Dados série: ", serie);
-    const url = `http://localhost:3000/api/user/series/${serie.id}`
+export async function adicionarSerie(dados_serie){
+    console.log(dados_serie)
+    //console.log("Dados série: ", serie);
+    const url = `http://localhost:3000/api/user/series/${dados_serie.serie.id}`
     const response = await fetch(url, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({serie}),
+        body: JSON.stringify(dados_serie),
     })
     console.log(await response.json())
     return await response.json();

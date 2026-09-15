@@ -5,20 +5,20 @@ import {findSerieById} from "../repositorio/serieRepository.js";
 
 
 const router = express.Router()
-
+//TODO: Continuar implementando salvar série "Minha Lista" na base de dados.
 router.post("/user/series/:serie_id", async (req, res) => {
     const userId = req.session.userId
     const {serie_id} = req.params;
     //console.log(userId);
-    //console.log("BODY: ", req.body)
+    console.log("BODY: ", req.body)
     //console.log("User id: ", userId);
-    const {serie} = req.body
-    console.log("Dados Serie: ", serie)
+    const dados_serie = req.body
+    console.log("Eps. por Temp:  ", dados_serie.eps_por_temporada)
     //console.log("Tipo dados_serie: ", typeof dados_serie);
-    await adicionarSerie(userId, serie_id, serie);
+    await adicionarSerie(userId, serie_id, dados_serie);
     res.status(200).json({
         success: true,
-        mensagem: `Série ${serie.name} adicionada com sucesso!`
+        mensagem: `Série ${dados_serie.name} adicionada com sucesso!`
     })
 })
 router.get("/user/me", async (req, res) => {
@@ -41,7 +41,6 @@ router.get("/user/series", async (req, res) => {
     } else {
         try{
             const series = await obterListaSeries(userId);
-            console.log(series);
             //console.log(series)
             res.status(200).json({series})
         } catch(error){

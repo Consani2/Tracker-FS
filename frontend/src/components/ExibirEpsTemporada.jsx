@@ -15,9 +15,7 @@ function ExibirEpsTemporada(props) {
     const [listaUser, setListaUser] = useState([]);
     const serie = props.serie
     const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
-    //console.log("Dados Temp: ", dadosTemporada)
-    //console.log(serieJaExiste);
-    //console.log("Lista user", listaUser)
+    //console.log(serie)
 
     //Busca lista de séries do na "Minha Lista" do utilizador. Armazena o valor na array ListaUser
     useEffect(()=>{
@@ -47,15 +45,22 @@ function ExibirEpsTemporada(props) {
 
     }, [serie.id, temporadaSelecionada]);
 
-    async function adicionarSerieListaUser(){
+    async function adicionarSerieListaUser() {
         const dados_serie = {
-            dados_serie: serie,
-            eps_por_temporada: dadosTemporada
-        }
-        await adicionarSerie({dados_serie});
+            serie: serie,
+            eps_por_temporada: serie.seasons.map((temporada) => ({
+                temporada: temporada.season_number,
+                total_episodios: temporada.episode_count,
 
-        const dados = await listarSerieUser()
-        setListaUser(dados);
+            })),
+            episodios_assistidos: []
+        };
+        console.log("Dados_serie: ", dados_serie);
+
+        await adicionarSerie(dados_serie);
+
+        const dados = await listarSerieUser();
+        setListaUser(dados.series);
     }
 
 

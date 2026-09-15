@@ -30,13 +30,20 @@ export async function findByName(username){
  * @param dados_serie
  * @returns {Promise<*>}
  */
-export async function adicionarSerieLista(userId, id_serie, dados_serie){
+export async function adicionarSerieLista(userId, id_serie, dados_serie, eps_por_temporada){
 
     let resultado = await findSerieById(id_serie);
 
     if(!resultado){
         await adicionarSerie(id_serie, dados_serie);
     }
+    console.log(eps_por_temporada)
+    const eps_temporada = {
+        temporada: eps_por_temporada.temporada,
+        episodios: eps_por_temporada.total_episodios
+    }
+    //console.log("Ep temporada em adicionarserielista",eps_temporada)
+    const ep_assistidos = eps_temporada.episodios_assistidos;
 
     let query = await pool.query(
         `SELECT * FROM user_series 
@@ -46,9 +53,9 @@ export async function adicionarSerieLista(userId, id_serie, dados_serie){
     )
     if (query.rows.length === 0){
         query = await pool.query(
-            `INSERT INTO user_series (user_id, series_id, dados_serie) 
-             VALUES ($1, $2, $3)`,
-            [userId, id_serie, dados_serie]
+            `INSERT INTO user_series (user_id, series_id, dados_serie, eps_por_temporada, eps_assistidos) 
+             VALUES ($1, $2, $3, $4, $5)`,
+            [userId, id_serie, dados_serie, {eps_temporada}, ep_assistidos]
         )
     }
     return query.rows[0];
@@ -64,7 +71,7 @@ export async function findUserById(user_id){
     return resultado.rows[0];
 }
 export async function obterUserSeries(user_id){
-    console.log("User id," , user_id);
+    //console.log("User id," , user_id);
     const query = await pool.query(
         `SELECT * FROM user_series 
          WHERE user_id = $1 `,
