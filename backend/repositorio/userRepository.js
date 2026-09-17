@@ -53,7 +53,7 @@ export async function adicionarSerieLista(userId, id_serie, dados_serie){
             query = await pool.query(
                 `INSERT INTO user_series (user_id, series_id, dados_serie, eps_por_temporada, eps_assistidos) 
              VALUES ($1, $2, $3, $4, $5)`,
-                [userId, id_serie, dados_serie, JSON.stringify(eps_por_temporada), JSON.stringify(episodios_assistidos)]
+                [userId, id_serie, dados_serie.serie, JSON.stringify(eps_por_temporada), JSON.stringify(episodios_assistidos)]
             )
         }catch (error){
             console.log("Erro ao inserir série em user_series na BD: ", error.message)

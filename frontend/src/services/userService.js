@@ -11,7 +11,7 @@ export async function listarSerieUser(){
 }
 
 export async function adicionarSerie(dados_serie){
-    console.log(dados_serie)
+    //console.log(dados_serie)
     //console.log("Dados série: ", serie);
     const url = `http://localhost:3000/api/user/series/${dados_serie.serie.id}`
     const response = await fetch(url, {
@@ -22,7 +22,6 @@ export async function adicionarSerie(dados_serie){
         credentials: "include",
         body: JSON.stringify(dados_serie),
     })
-    console.log(await response.json())
     return await response.json();
 }
 export async function obterUtilizadorLogado(){

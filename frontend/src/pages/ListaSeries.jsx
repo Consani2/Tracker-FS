@@ -11,6 +11,7 @@ function ListaSeries() {
     useEffect(() => {
         async function carregarDadosLista(){
             const resp = await listarSerieUser();
+
             console.log("Response: ", resp);
             setDadosSeries(resp)
         }
@@ -30,7 +31,7 @@ function ListaSeries() {
             </>
             <>{dados_series?.series.map((serie)=>(
                 <div key={serie?.series_id}>
-                    <ExibirEpsTemporada serie = {serie}/>
+                    <ExibirEpsTemporada serie = {serie.dados_serie}/>
                 </div>
                 ))}
             </>

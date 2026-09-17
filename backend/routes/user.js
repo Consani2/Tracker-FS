@@ -41,7 +41,6 @@ router.get("/user/series", async (req, res) => {
     } else {
         try{
             const series = await obterListaSeries(userId);
-            //console.log(series)
             res.status(200).json({series})
         } catch(error){
             res.status(400).json(error)

@@ -14,6 +14,7 @@ function ExibirEpsTemporada(props) {
     const [todosEpAtivo, setTodosEpAtivo] = useState(false);
     const [listaUser, setListaUser] = useState([]);
     const serie = props.serie
+    //console.log("Lista user: ", listaUser)
     const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
     //console.log(serie)
 
@@ -56,11 +57,15 @@ function ExibirEpsTemporada(props) {
             episodios_assistidos: []
         };
         //console.log("Dados_serie: ", dados_serie);
-
         await adicionarSerie(dados_serie);
-
         const dados = await listarSerieUser();
         setListaUser(dados.series);
+    }
+    async function removerSerieListaUser(idSerie) {
+        //TODO: Implementar remover série Lista user
+        //Cada componente série tem seu ID associado.
+        //Enviar apenas o ID da série a ser removida para o backend
+        //Dúvida: Como atualizar o estado da lista do utilizaodor?
     }
 
 
@@ -68,26 +73,22 @@ function ExibirEpsTemporada(props) {
         <div>
 
             <section>
+                Nome: {serie.name}
+                <br/>
                 Episódios: {serie.number_of_episodes}
                 <br/>
                 Temporadas: {serie.number_of_seasons}
                 <br/>
 
-                {!serieJaExiste && (
-                    <button onClick={() => {
-                        adicionarSerieListaUser()
-                    }}>
-                        Adicionar Série à sua Lista
-                    </button>
-                )}
-
-                {serieJaExiste && (
-                    <button onClick={() => {
-                        //TODO: Implementar - Remove a série da lista do utilizador
-                    }}>
+                {serieJaExiste ? (
+                    <button onClick={()=> removerSerieListaUser(serie.id)}>
                         Remover Série da Lista
                     </button>
-                )}
+                ):
+                    <button onClick={adicionarSerieListaUser}>
+                        Adicionar à Lista
+                    </button>
+                }
             </section>
 
             <br/>
