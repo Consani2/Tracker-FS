@@ -55,7 +55,7 @@ function ExibirEpsTemporada(props) {
             })),
             episodios_assistidos: []
         };
-        console.log("Dados_serie: ", dados_serie);
+        //console.log("Dados_serie: ", dados_serie);
 
         await adicionarSerie(dados_serie);
 

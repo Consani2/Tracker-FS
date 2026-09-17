@@ -30,20 +30,17 @@ export async function findByName(username){
  * @param dados_serie
  * @returns {Promise<*>}
  */
-export async function adicionarSerieLista(userId, id_serie, dados_serie, eps_por_temporada){
+export async function adicionarSerieLista(userId, id_serie, dados_serie){
 
     let resultado = await findSerieById(id_serie);
 
     if(!resultado){
         await adicionarSerie(id_serie, dados_serie);
     }
-    console.log(eps_por_temporada)
-    const eps_temporada = {
-        temporada: eps_por_temporada.temporada,
-        episodios: eps_por_temporada.total_episodios
-    }
+    const {eps_por_temporada} = dados_serie
+    const {episodios_assistidos} = dados_serie
     //console.log("Ep temporada em adicionarserielista",eps_temporada)
-    const ep_assistidos = eps_temporada.episodios_assistidos;
+    //console.log("Ep por temporada: ", eps_por_temporada)
 
     let query = await pool.query(
         `SELECT * FROM user_series 
@@ -52,11 +49,16 @@ export async function adicionarSerieLista(userId, id_serie, dados_serie, eps_por
         [userId, id_serie]
     )
     if (query.rows.length === 0){
-        query = await pool.query(
-            `INSERT INTO user_series (user_id, series_id, dados_serie, eps_por_temporada, eps_assistidos) 
+        try{
+            query = await pool.query(
+                `INSERT INTO user_series (user_id, series_id, dados_serie, eps_por_temporada, eps_assistidos) 
              VALUES ($1, $2, $3, $4, $5)`,
-            [userId, id_serie, dados_serie, {eps_temporada}, ep_assistidos]
-        )
+                [userId, id_serie, dados_serie, JSON.stringify(eps_por_temporada), JSON.stringify(episodios_assistidos)]
+            )
+        }catch (error){
+            console.log("Erro ao inserir série em user_series na BD: ", error.message)
+        }
+
     }
     return query.rows[0];
 }
