@@ -49,3 +49,20 @@ export async function obterUtilizadorLogado(){
     return await response.json();
 
 }
+export async function marcarEpAssistidoAPI(serieId, temporada, ep, marcado){
+    const url = `http://localhost:3000/api/user/series`
+    console.log(`EP ${ep} | Temporada ${temporada} | Marcado ${marcado}`);
+    const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({serieId, temporada, ep, marcado}),
+        credentials: "include"
+    })
+    if (response.ok){
+        return await response.json();
+    } else {
+        return response.headers
+    }
+}

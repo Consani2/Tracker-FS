@@ -1,6 +1,6 @@
 import { carregarDetalhesSeason } from "../services/apiService.js";
 import {useContext, useEffect, useState} from "react";
-import {adicionarSerie, listarSerieUser, removerSerie} from "../services/userService.js";
+import {adicionarSerie, listarSerieUser, marcarEpAssistidoAPI, removerSerie} from "../services/userService.js";
 import {AuthContext} from "../contexts/AuthContext.jsx";
 import listaSeries from "../pages/ListaSeries.jsx";
 
@@ -13,8 +13,9 @@ function ExibirEpsTemporada(props) {
     const [dadosTemporada, setDadosTemporada] = useState(null);
     const [todosEpAtivo, setTodosEpAtivo] = useState(false);
     const [listaUser, setListaUser] = useState([]);
+    const [epsAssistidos, setEpAssistido] = useState([]);
     const serie = props.serie
-    //console.log("Lista user: ", listaUser)
+    //console.log("Dados temp: ", dadosTemporada)
     const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
     //console.log(serie)
 
@@ -61,15 +62,20 @@ function ExibirEpsTemporada(props) {
         const dados = await listarSerieUser();
         setListaUser(dados.series);
     }
-    async function removerSerieListaUser(idSerie) {
-        //TODO: Implementar remover série Lista user
-        //Cada componente série tem seu ID associado.
-        //Enviar apenas o ID da série a ser removida para o backend
-        //Dúvida: Como atualizar o estado da lista do utilizaodor?
-        //console.log("ID Série: ", idSerie)
-        await removerSerie(idSerie);
-        const dados = await listarSerieUser();
-        setListaUser(dados.series);
+    async function removerSerie() {
+        await props.removerDaLista(props.serieId)
+    }
+    async function marcarEpAssistido(temporada, ep, marcado){
+        await marcarEpAssistidoAPI(serie.id, temporada, ep, marcado);
+
+        setEpAssistido((atuais) => {
+            if(marcado){
+                return [...atuais, ep];
+            }
+
+            return atuais.filter((episodio) => episodio !== ep)
+        })
+
     }
 
 
@@ -85,7 +91,7 @@ function ExibirEpsTemporada(props) {
                 <br/>
 
                 {serieJaExiste ? (
-                    <button onClick={()=> removerSerieListaUser(serie.id)}>
+                    <button onClick={()=> removerSerie()}>
                         Remover Série da Lista
                     </button>
                 ):
@@ -148,7 +154,6 @@ function ExibirEpsTemporada(props) {
                     setTodosEpAtivo(false);
                     setEpisodiosAssistidos([]);
                     serieAtual.episodios_assistidos = [];
-                    localStorage.setItem("currentUser", JSON.stringify(currentUser));
                 }
                 }>Desmarcar Temporada</button>
             )}
@@ -161,7 +166,18 @@ function ExibirEpsTemporada(props) {
                 {/*Mapeia os episódios de cada temporada selecionada pelo utilizador*/}
                 {dadosTemporada?.episodes?.map((episodio, i) => (
                     <div key={episodio.id}>
-                        <input type={"checkbox"}
+                        <input
+                            type={"checkbox"}
+                            checked={epsAssistidos.includes(episodio.episode_number)}
+                            onChange={(event) => {
+                                const marcado = event.target.checked
+
+                                marcarEpAssistido(
+                                    temporadaSelecionada,
+                                    episodio.episode_number,
+                                    marcado
+                                )
+                            }}
                         />
 
                         <span>

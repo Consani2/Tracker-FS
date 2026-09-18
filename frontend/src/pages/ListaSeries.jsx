@@ -1,24 +1,28 @@
 import {useContext, useEffect, useState} from "react";
 import ExibirEpsTemporada from "../components/ExibirEpsTemporada.jsx";
-import {listarSerieUser, obterUtilizadorLogado} from "../services/userService.js";
+import {listarSerieUser, obterUtilizadorLogado, removerSerie} from "../services/userService.js";
 import {AuthContext} from "../contexts/AuthContext.jsx";
 
-// Página que exibe a lista de séries do utilizador, permitindo selecionar temporadas e visualizar detalhes de cada série.
-//:TODO: Continuar Implementação
 function ListaSeries() {
-    const {user} = useContext(AuthContext);
-    const [dados_series, setDadosSeries] = useState(null)
+    //const {user} = useContext(AuthContext);
+    const [listaUser, setListaUser] = useState(null)
     useEffect(() => {
         async function carregarDadosLista(){
             const resp = await listarSerieUser();
 
-            console.log("Response: ", resp);
-            setDadosSeries(resp)
+            //console.log("Response: ", resp);
+            setListaUser(resp)
         }
 
         carregarDadosLista();
-    }, [])
-    if(!dados_series){
+    }, []);
+
+    async function removerDaLista(idSerie){
+        await removerSerie(idSerie);
+        const novaLista = await listarSerieUser();
+        setListaUser(novaLista);
+    }
+    if(!listaUser){
         return <p>Carregando...</p>
     }
 
@@ -26,12 +30,13 @@ function ListaSeries() {
         <>
             <h1>Sua Lista de Séries</h1>
 
-            <>
-                Em construção. ID Utilizador: {user?.id} | Nome Utilizador: {user?.username}
-            </>
-            <>{dados_series?.series.map((serie)=>(
+            <>{listaUser?.series.map((serie)=>(
                 <div key={serie?.series_id}>
-                    <ExibirEpsTemporada serie = {serie.dados_serie}/>
+                    <ExibirEpsTemporada
+                        serie = {serie.dados_serie}
+                        serieId = {serie.series_id}
+                        removerDaLista = {removerDaLista}
+                    />
                 </div>
                 ))}
             </>

@@ -58,4 +58,11 @@ router.get("/user/series", async (req, res) => {
 
 
 })
+router.patch("/user/series", async (req, res) => {
+    const userId = req.session.userId;
+    const {body} = req.body
+    //console.log(req.body);
+    //console.log(dado_serie);
+})
+
 export default router;
