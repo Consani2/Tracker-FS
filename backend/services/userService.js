@@ -1,4 +1,4 @@
-import {adicionarSerieLista, findUserById, obterUserSeries} from "../repositorio/userRepository.js";
+import {adicionarSerieLista, findUserById, obterUserSeries, removerSerieLista} from "../repositorio/userRepository.js";
 
 
 export async function adicionarSerie(userId, id_serie, dados_serie) {
@@ -6,6 +6,14 @@ export async function adicionarSerie(userId, id_serie, dados_serie) {
         return await adicionarSerieLista(userId, id_serie, dados_serie)
     } catch (erro){
         console.log("Falha ao adicionar série a lista! Erro: ", erro.message)
+    }
+
+}
+export async function removerSerie(idUser, idSerie){
+    try {
+        return await removerSerieLista(idUser, idSerie);
+    }catch (erro){
+        console.log("Falha ao remover série da BD. Erro: ", erro.message);
     }
 
 }

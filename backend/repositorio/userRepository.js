@@ -62,6 +62,18 @@ export async function adicionarSerieLista(userId, id_serie, dados_serie){
     }
     return query.rows[0];
 }
+export async function removerSerieLista(idUser, idSerie){
+    const resultado = await pool.query(
+        `DELETE FROM user_series 
+         WHERE user_id = $1 AND series_id = $2
+         RETURNING series_id`,
+        [idUser, idSerie]
+    )
+    if (resultado.rows.length === 0){
+        throw  new Error("Série não encontrada!")
+    }
+    return resultado.rows[0];
+}
 export async function findUserById(user_id){
     const resultado = await pool.query(
         `SELECT id, username FROM users WHERE id = $1`,

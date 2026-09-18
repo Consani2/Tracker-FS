@@ -24,6 +24,19 @@ export async function adicionarSerie(dados_serie){
     })
     return await response.json();
 }
+export async function removerSerie(idSerie){
+    const url = `http://localhost:3000/api/user/series/${idSerie}`
+    const response = await fetch(url, {
+        method: "DELETE",
+        credentials: "include",
+    })
+    const dadoResp = await response.json();
+    if (dadoResp.success){
+        return alert("Série removida com sucesso.")
+    } else {
+        return alert("Falha ao remover a série")
+    }
+}
 export async function obterUtilizadorLogado(){
     const response = await fetch("http://localhost:3000/api/user/me",{
         credentials: "include"

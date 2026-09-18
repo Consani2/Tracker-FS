@@ -1,7 +1,5 @@
 import express from "express";
-import {adicionarSerie, obterListaSeries, obterUtilizador} from "../services/userService.js";
-import {obterUtilizadorLogado} from "../../frontend/src/services/userService.js";
-import {findSerieById} from "../repositorio/serieRepository.js";
+import {adicionarSerie, obterListaSeries, obterUtilizador, removerSerie} from "../services/userService.js";
 
 
 const router = express.Router()
@@ -20,6 +18,16 @@ router.post("/user/series/:serie_id", async (req, res) => {
         success: true,
         mensagem: `Série ${dados_serie.serie.name} adicionada com sucesso!`
     })
+})
+router.delete("/user/series/:serie_id", async (req, res) => {
+    const userId = req.session.userId;
+    const {serie_id} = req.params;
+    console.log("Serie id: ", serie_id);
+    await removerSerie(userId, serie_id);
+    res.status(200).json({
+        success: true
+    })
+
 })
 router.get("/user/me", async (req, res) => {
     if(!req.session.userId){

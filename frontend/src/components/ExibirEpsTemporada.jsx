@@ -1,6 +1,6 @@
 import { carregarDetalhesSeason } from "../services/apiService.js";
 import {useContext, useEffect, useState} from "react";
-import {adicionarSerie, listarSerieUser} from "../services/userService.js";
+import {adicionarSerie, listarSerieUser, removerSerie} from "../services/userService.js";
 import {AuthContext} from "../contexts/AuthContext.jsx";
 import listaSeries from "../pages/ListaSeries.jsx";
 
@@ -66,6 +66,10 @@ function ExibirEpsTemporada(props) {
         //Cada componente série tem seu ID associado.
         //Enviar apenas o ID da série a ser removida para o backend
         //Dúvida: Como atualizar o estado da lista do utilizaodor?
+        //console.log("ID Série: ", idSerie)
+        await removerSerie(idSerie);
+        const dados = await listarSerieUser();
+        setListaUser(dados.series);
     }
 
 
