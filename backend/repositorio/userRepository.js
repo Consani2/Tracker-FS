@@ -1,5 +1,6 @@
 import pool from "../db.js";
 import {adicionarSerie, findSerieById} from "./serieRepository.js";
+import serie from "../routes/serie.js";
 
 //Retorna objeto user: id, username
 export async function criarUtilizador(username, senha){
@@ -96,4 +97,77 @@ export async function obterUserSeries(user_id){
         throw new Error("Não há séries na lista.")
     }
     return query.rows;
+}
+export async function adicionarEpRepository(userId, serieId, temp, ep) {
+//TODO: Descobrir a causa da demora para o ep adicionado aparecer na BD.
+    const total_eps =
+        await obtertTotalEpsAssistidosRepository(userId, serieId, temp);
+
+    const resultado =
+        await obterUserSerie(userId, serieId);
+
+    console.log("Resultado ", resultado)
+    const dados = resultado?.eps_assistidos ?? [];
+
+    const temporadaExistente = dados.find(
+        item => item.temporada === temp
+    );
+
+    if (temporadaExistente) {
+        temporadaExistente.episodios_assistidos.push(ep);
+    } else {
+        dados.push({
+            temporada: temp,
+            episodios_totais: total_eps,
+            episodios_assistidos: [ep]
+        });
+    }
+
+    await pool.query(
+        `UPDATE user_series
+         SET eps_assistidos = $1
+         WHERE user_id = $2
+         AND series_id = $3`,
+        [
+            JSON.stringify(dados),
+            userId,
+            serieId
+        ]
+    );
+}
+
+export async function removerEpRepository (userId, serieId, temp, ep){
+
+}
+
+export async function obterEpsAssistidosRepository (user, serieId){
+    const query = await pool.query(
+        `SELECT * FROM user_series 
+         WHERE user_id = $1 AND series_id = $2`,
+        [user, serieId]
+    )
+    return query.rows[0]?.eps_assistidos;
+}
+async function obtertTotalEpsAssistidosRepository (userId, serieId, temp){
+    const resultado = await pool.query (
+        `SELECT * FROM user_series 
+         WHERE user_id = $1 AND series_id = $2  `,
+        [userId, serieId]
+    )
+    //console.log("RESULTADO: ", resultado.rows[0])
+    const temporada = resultado.rows[0]?.eps_por_temporada.find(
+        (item) => item.temporada === temp
+    );
+    return temporada?.total_episodios;
+}
+async function obterUserSerie(userId, serieId) {
+    const query = await pool.query(
+        `SELECT *
+         FROM user_series
+         WHERE user_id = $1
+         AND series_id = $2`,
+        [userId, serieId]
+    );
+
+    return query.rows[0];
 }

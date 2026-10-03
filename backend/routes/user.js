@@ -1,5 +1,11 @@
 import express from "express";
-import {adicionarSerie, obterListaSeries, obterUtilizador, removerSerie} from "../services/userService.js";
+import {
+    adicionarEpAssistido,
+    adicionarSerie,
+    obterListaSeries,
+    obterUtilizador, removerEpAssistido,
+    removerSerie
+} from "../services/userService.js";
 
 
 const router = express.Router()
@@ -60,9 +66,13 @@ router.get("/user/series", async (req, res) => {
 })
 router.patch("/user/series", async (req, res) => {
     const userId = req.session.userId;
-    const {body} = req.body
-    //console.log(req.body);
-    //console.log(dado_serie);
+    const {serieId, temporada, ep, marcado} = req.body
+    console.log(serieId);
+    if(marcado){
+        await adicionarEpAssistido(userId, serieId, temporada, ep)
+    } else {
+        await removerEpAssistido(userId, serieId, temporada, ep)
+    }
 })
 
 export default router;

@@ -1,4 +1,10 @@
-import {adicionarSerieLista, findUserById, obterUserSeries, removerSerieLista} from "../repositorio/userRepository.js";
+import {
+    adicionarEpRepository,
+    adicionarSerieLista,
+    findUserById,
+    obterUserSeries, removerEpRepository,
+    removerSerieLista
+} from "../repositorio/userRepository.js";
 
 
 export async function adicionarSerie(userId, id_serie, dados_serie) {
@@ -26,4 +32,19 @@ export async function obterUtilizador(user_id){
 }
 export async function obterListaSeries(userId){
     return await obterUserSeries(userId);
+}
+export async function adicionarEpAssistido (userId, serieId, temp, ep){
+    try {
+        return await adicionarEpRepository(userId, serieId, temp, ep);
+    } catch (erro){
+        console.log("ERROR: ", erro.message)
+    }
+}
+export async function removerEpAssistido(userId, serieId, temp, ep){
+    try {
+        return await removerEpRepository(userId, serieId, temp, ep);
+
+    } catch (erro) {
+        console.log("ERROR: ", erro.message)
+    }
 }
