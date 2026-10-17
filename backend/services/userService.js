@@ -1,10 +1,11 @@
 import {
     adicionarEpRepository,
     adicionarSerieLista,
-    findUserById,
+    findUserById, obterEpsAssistidosRepository,
     obterUserSeries, removerEpRepository,
     removerSerieLista
 } from "../repositorio/userRepository.js";
+import {obterEpsAssistidosAPI} from "../../frontend/src/services/userService.js";
 
 
 export async function adicionarSerie(userId, id_serie, dados_serie) {
@@ -47,4 +48,9 @@ export async function removerEpAssistido(userId, serieId, temp, ep){
     } catch (erro) {
         console.log("ERROR: ", erro.message)
     }
+}
+export async function obterEpsAssistidos(userId, serieId){
+    const dados = await obterEpsAssistidosRepository(userId, serieId);
+    //console.log("DADOS: ", dados)
+    return dados;
 }

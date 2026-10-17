@@ -99,15 +99,16 @@ export async function obterUserSeries(user_id){
     return query.rows;
 }
 export async function adicionarEpRepository(userId, serieId, temp, ep) {
-//TODO: Descobrir a causa da demora para o ep adicionado aparecer na BD.
     const total_eps =
         await obtertTotalEpsAssistidosRepository(userId, serieId, temp);
+    //console.log("Total EPS | BD", total_eps)
 
     const resultado =
         await obterUserSerie(userId, serieId);
-
-    console.log("Resultado ", resultado)
-    const dados = resultado?.eps_assistidos ?? [];
+    //console.log("Resultado Obter User Series: ", typeof resultado);
+    //console.log("Resultado ", resultado)
+    const dados = [resultado?.eps_assistidos ?? []];
+    console.log("Dados: ", dados)
 
     const temporadaExistente = dados.find(
         item => item.temporada === temp

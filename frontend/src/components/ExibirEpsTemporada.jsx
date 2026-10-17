@@ -1,9 +1,16 @@
 import { carregarDetalhesSeason } from "../services/apiService.js";
 import {useContext, useEffect, useState} from "react";
-import {adicionarSerie, listarSerieUser, marcarEpAssistidoAPI, removerSerie} from "../services/userService.js";
+import {
+    adicionarSerie, carregarDadosUser,
+    listarSerieUser,
+    marcarEpAssistidoAPI,
+    obterEpsAssistidosAPI,
+    removerSerie
+} from "../services/userService.js";
 import {AuthContext} from "../contexts/AuthContext.jsx";
 import listaSeries from "../pages/ListaSeries.jsx";
 
+//TODO: Atualizar checkbox para episodios assistidos.
 function serieEstaNaLista(lista, idSerie){
     return lista.some(serie => serie.series_id === idSerie);
 }
@@ -11,23 +18,16 @@ function serieEstaNaLista(lista, idSerie){
 function ExibirEpsTemporada(props) {
     const [temporadaSelecionada, setTemporadaSelecionada] = useState(1);
     const [dadosTemporada, setDadosTemporada] = useState(null);
+    const listaUser = props.listaUser ?? [];
+
     const [todosEpAtivo, setTodosEpAtivo] = useState(false);
-    const [listaUser, setListaUser] = useState([]);
     const [epsAssistidos, setEpAssistido] = useState([]);
     const serie = props.serie
     //console.log("Dados temp: ", dadosTemporada)
     const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
-    //console.log(serie)
-
-    //Busca lista de séries do na "Minha Lista" do utilizador. Armazena o valor na array ListaUser
-    useEffect(()=>{
-        async function fetchData(){
-            const dados = await listarSerieUser()
-            //console.log("DADOS", dados.series)
-            setListaUser(dados.series);
-        }
-        fetchData();
-    }, [])
+    console.log("Série atual:", serie.id);
+    console.log("Lista do utilizador:", listaUser);
+    console.log("Série já existe:", serieJaExiste);
 
     useEffect(() => {
 
@@ -45,6 +45,16 @@ function ExibirEpsTemporada(props) {
 
         carregarDados();
 
+    }, [serie.id, temporadaSelecionada]);
+
+    useEffect(() => {
+        async function carregarEpAssistidos(){
+            const dados = await obterEpsAssistidosAPI(serie.id)
+
+            //const temporada = dados.find(item => item.temporada === temporadaSelecionada);
+
+
+        } carregarEpAssistidos()
     }, [serie.id, temporadaSelecionada]);
 
     async function adicionarSerieListaUser() {
@@ -170,6 +180,7 @@ function ExibirEpsTemporada(props) {
                             type={"checkbox"}
                             checked={epsAssistidos.includes(episodio.episode_number)}
                             onChange={(event) => {
+                                //console.log("EP assistidos: ",epsAssistidos)
                                 const marcado = event.target.checked
 
                                 marcarEpAssistido(

@@ -66,3 +66,25 @@ export async function marcarEpAssistidoAPI(serieId, temporada, ep, marcado){
         return response.headers
     }
 }
+export async function obterEpsAssistidosAPI(serieId){
+    //console.log("ObterEpAssistidosAPI foi chamado!")
+    const url = `http://localhost:3000/api/user/series/${serieId}`
+    const response = await fetch(url, {
+        method: "GET",
+        credentials: "include"
+    })
+    const dados = await response.json()
+    //console.log("Dados: ", dados)
+
+    if (!response.ok) {
+        throw new Error("Não foi possível obter os episódios assistidos.");
+    }
+
+    return response.json();
+}
+export async function carregarDadosUser(){
+    const response = await fetch("http://localhost:3000/api/user/me",{
+        method: "GET",
+        credentials: "include"
+    })
+}

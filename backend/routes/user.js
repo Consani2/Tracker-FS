@@ -1,7 +1,7 @@
 import express from "express";
 import {
     adicionarEpAssistido,
-    adicionarSerie,
+    adicionarSerie, obterEpsAssistidos,
     obterListaSeries,
     obterUtilizador, removerEpAssistido,
     removerSerie
@@ -28,7 +28,7 @@ router.post("/user/series/:serie_id", async (req, res) => {
 router.delete("/user/series/:serie_id", async (req, res) => {
     const userId = req.session.userId;
     const {serie_id} = req.params;
-    console.log("Serie id: ", serie_id);
+    //console.log("Serie id: ", serie_id);
     await removerSerie(userId, serie_id);
     res.status(200).json({
         success: true
@@ -55,6 +55,7 @@ router.get("/user/series", async (req, res) => {
     } else {
         try{
             const series = await obterListaSeries(userId);
+            //console.log(series)
             res.status(200).json({series})
         } catch(error){
             res.status(400).json(error)
@@ -67,7 +68,7 @@ router.get("/user/series", async (req, res) => {
 router.patch("/user/series", async (req, res) => {
     const userId = req.session.userId;
     const {serieId, temporada, ep, marcado} = req.body
-    console.log(serieId);
+    //console.log("ROUTE user/series | EP Assistido", req.body);
     if(marcado){
         await adicionarEpAssistido(userId, serieId, temporada, ep)
     } else {
@@ -75,4 +76,17 @@ router.patch("/user/series", async (req, res) => {
     }
 })
 
+router.get("/user/series/:serie_id", async (req, res) => {
+    const userId = req.session.userId;
+    const {serie_id} = req.params;
+    try {
+        const dados = await obterEpsAssistidos(userId, serie_id);
+        res.status(200).json({
+            success: true,
+            body: JSON.stringify(dados)
+        })
+    } catch (error){
+        console.log("ERROR: ", error.message)
+    }
+})
 export default router;

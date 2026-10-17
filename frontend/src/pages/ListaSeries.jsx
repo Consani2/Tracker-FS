@@ -10,7 +10,7 @@ function ListaSeries() {
         async function carregarDadosLista(){
             const resp = await listarSerieUser();
 
-            //console.log("Response: ", resp);
+            //console.log("Lista recebida: ", resp);
             setListaUser(resp)
         }
 
@@ -35,6 +35,7 @@ function ListaSeries() {
                     <ExibirEpsTemporada
                         serie = {serie.dados_serie}
                         serieId = {serie.series_id}
+                        listaUser = {listaUser.series}
                         removerDaLista = {removerDaLista}
                     />
                 </div>
