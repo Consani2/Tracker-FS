@@ -40,6 +40,7 @@ export async function adicionarSerieLista(userId, id_serie, dados_serie){
     }
     const {eps_por_temporada} = dados_serie
     const {episodios_assistidos} = dados_serie
+    //console.log("Dados serie: ", dados_serie)
     //console.log("Ep temporada em adicionarserielista",eps_temporada)
     //console.log("Ep por temporada: ", eps_por_temporada)
 
@@ -52,9 +53,9 @@ export async function adicionarSerieLista(userId, id_serie, dados_serie){
     if (query.rows.length === 0){
         try{
             query = await pool.query(
-                `INSERT INTO user_series (user_id, series_id, dados_serie, eps_por_temporada, eps_assistidos) 
-             VALUES ($1, $2, $3, $4, $5)`,
-                [userId, id_serie, dados_serie.serie, JSON.stringify(eps_por_temporada), JSON.stringify(episodios_assistidos)]
+                `INSERT INTO user_series (user_id, series_id) 
+             VALUES ($1, $2)`,
+                [userId, id_serie]
             )
         }catch (error){
             console.log("Erro ao inserir série em user_series na BD: ", error.message)
@@ -99,42 +100,13 @@ export async function obterUserSeries(user_id){
     return query.rows;
 }
 export async function adicionarEpRepository(userId, serieId, temp, ep) {
-    const total_eps =
-        await obtertTotalEpsAssistidosRepository(userId, serieId, temp);
-    //console.log("Total EPS | BD", total_eps)
 
-    const resultado =
-        await obterUserSerie(userId, serieId);
-    //console.log("Resultado Obter User Series: ", typeof resultado);
-    //console.log("Resultado ", resultado)
-    const dados = [resultado?.eps_assistidos ?? []];
-    console.log("Dados: ", dados)
-
-    const temporadaExistente = dados.find(
-        item => item.temporada === temp
+    const query = await pool.query(
+        `INSERT INTO user_watched_episodes (user_id, series_id, season_number, episode_number)
+         VALUES($1, $2, $3, $4)`,
+        [userId, serieId, temp, ep]
     );
 
-    if (temporadaExistente) {
-        temporadaExistente.episodios_assistidos.push(ep);
-    } else {
-        dados.push({
-            temporada: temp,
-            episodios_totais: total_eps,
-            episodios_assistidos: [ep]
-        });
-    }
-
-    await pool.query(
-        `UPDATE user_series
-         SET eps_assistidos = $1
-         WHERE user_id = $2
-         AND series_id = $3`,
-        [
-            JSON.stringify(dados),
-            userId,
-            serieId
-        ]
-    );
 }
 
 export async function removerEpRepository (userId, serieId, temp, ep){

@@ -1,6 +1,6 @@
 import pool from "../db.js";
 
-export async function adicionarSerie(serie_id, dados_serie, ){
+export async function adicionarSerie(serie_id, dados_serie){
     //console.log("Serie: ", serie);
     //console.log("NOME DADOS SÉRIE BD: ", dados_serie.serie.name)
     const resultado = await pool.query(

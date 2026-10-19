@@ -3,6 +3,7 @@ export async function listarSerieUser(){
         credentials: "include"
     })
     const dados = await response.json();
+    console.log(dados)
     if (dados.autenticado === false){
         alert ("Utilizador não logado!");
         return false;

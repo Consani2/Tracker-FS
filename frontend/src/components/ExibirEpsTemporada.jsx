@@ -25,9 +25,9 @@ function ExibirEpsTemporada(props) {
     const serie = props.serie
     //console.log("Dados temp: ", dadosTemporada)
     const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
-    console.log("Série atual:", serie.id);
-    console.log("Lista do utilizador:", listaUser);
-    console.log("Série já existe:", serieJaExiste);
+    //console.log("Série atual:", serie.id);
+    //console.log("Lista do utilizador:", listaUser);
+    //console.log("Série já existe:", serieJaExiste);
 
     useEffect(() => {
 
