@@ -1,9 +1,10 @@
 export async function listarSerieUser(){
     const response = await fetch("http://localhost:3000/api/user/series", {
+        method: "GET",
         credentials: "include"
     })
     const dados = await response.json();
-    console.log(dados)
+    console.log("Dados para a lista: ", dados)
     if (dados.autenticado === false){
         alert ("Utilizador não logado!");
         return false;
@@ -75,13 +76,14 @@ export async function obterEpsAssistidosAPI(serieId){
         credentials: "include"
     })
     const dados = await response.json()
+    //console.log(dados.body)
     //console.log("Dados: ", dados)
 
     if (!response.ok) {
         throw new Error("Não foi possível obter os episódios assistidos.");
     }
 
-    return response.json();
+    return dados.body;
 }
 export async function carregarDadosUser(){
     const response = await fetch("http://localhost:3000/api/user/me",{

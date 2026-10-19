@@ -115,11 +115,12 @@ export async function removerEpRepository (userId, serieId, temp, ep){
 
 export async function obterEpsAssistidosRepository (user, serieId){
     const query = await pool.query(
-        `SELECT * FROM user_series 
+        `SELECT season_number, episode_number FROM user_watched_episodes 
          WHERE user_id = $1 AND series_id = $2`,
         [user, serieId]
     )
-    return query.rows[0]?.eps_assistidos;
+    //console.log(typeof query.rows[0])
+    return query.rows;
 }
 async function obtertTotalEpsAssistidosRepository (userId, serieId, temp){
     const resultado = await pool.query (

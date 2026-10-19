@@ -9,6 +9,7 @@ function ListaSeries() {
     useEffect(() => {
         async function carregarDadosLista(){
             const resp = await listarSerieUser();
+            console.log("response listauser: ", resp)
 
             //console.log("Lista recebida: ", resp);
             setListaUser(resp)
@@ -29,17 +30,22 @@ function ListaSeries() {
     return (
         <>
             <h1>Sua Lista de Séries</h1>
+            <>
+                {listaUser?.series.map((serie) => {
+                    //console.log("Série:", serie);
+                    //console.log("Dados da série: ", serie.dados_serie)
 
-            <>{listaUser?.series.map((serie)=>(
-                <div key={serie?.series_id}>
-                    <ExibirEpsTemporada
-                        serie = {serie.dados_serie}
-                        serieId = {serie.series_id}
-                        listaUser = {listaUser.series}
-                        removerDaLista = {removerDaLista}
-                    />
-                </div>
-                ))}
+                    return (
+                        <div key={serie?.series_id}>
+                            <ExibirEpsTemporada
+                                serie={serie.dados_serie}
+                                serieId={serie.series_id}
+                                listaUser={listaUser.series}
+                                removerDaLista={removerDaLista}
+                            />
+                        </div>
+                    );
+                })}
             </>
 
         </>

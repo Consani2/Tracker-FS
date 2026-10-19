@@ -83,7 +83,7 @@ router.get("/user/series/:serie_id", async (req, res) => {
         const dados = await obterEpsAssistidos(userId, serie_id);
         res.status(200).json({
             success: true,
-            body: JSON.stringify(dados)
+            body: dados
         })
     } catch (error){
         console.log("ERROR: ", error.message)

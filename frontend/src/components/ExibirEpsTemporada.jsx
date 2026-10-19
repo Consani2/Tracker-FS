@@ -23,11 +23,10 @@ function ExibirEpsTemporada(props) {
     const [todosEpAtivo, setTodosEpAtivo] = useState(false);
     const [epsAssistidos, setEpAssistido] = useState([]);
     const serie = props.serie
-    //console.log("Dados temp: ", dadosTemporada)
+    console.log("Série: ", serie)
+    console.log("Props ", props)
     const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
-    //console.log("Série atual:", serie.id);
-    //console.log("Lista do utilizador:", listaUser);
-    //console.log("Série já existe:", serieJaExiste);
+    console.log("EPs assistidos: ", epsAssistidos)
 
     useEffect(() => {
 
@@ -50,12 +49,15 @@ function ExibirEpsTemporada(props) {
     useEffect(() => {
         async function carregarEpAssistidos(){
             const dados = await obterEpsAssistidosAPI(serie.id)
+            //console.log(dados)
+
+            setEpAssistido(dados)
 
             //const temporada = dados.find(item => item.temporada === temporadaSelecionada);
 
 
         } carregarEpAssistidos()
-    }, [serie.id, temporadaSelecionada]);
+    }, [serie.id]);
 
     async function adicionarSerieListaUser() {
         const dados_serie = {
@@ -80,10 +82,29 @@ function ExibirEpsTemporada(props) {
 
         setEpAssistido((atuais) => {
             if(marcado){
-                return [...atuais, ep];
+                const jaExiste = atuais.some(
+                    item =>
+                        item.season_number === temporada &&
+                        item.episode_number === ep
+                )
+                if(jaExiste) return atuais;
+
+                return [
+                    ...atuais,
+                    {
+                        season_number: temporada,
+                        episode_number: ep,
+                    }
+                ];
             }
 
-            return atuais.filter((episodio) => episodio !== ep)
+            return atuais.filter(
+                item =>
+                    !(
+                        item.season_number === temporada &&
+                        item.episode_number === ep
+                    )
+            )
         })
 
     }
@@ -178,7 +199,11 @@ function ExibirEpsTemporada(props) {
                     <div key={episodio.id}>
                         <input
                             type={"checkbox"}
-                            checked={epsAssistidos.includes(episodio.episode_number)}
+                            checked={epsAssistidos.some(
+                                item =>
+                                    item.season_number === temporadaSelecionada &&
+                                    item.episode_number === episodio.number
+                            )}
                             onChange={(event) => {
                                 //console.log("EP assistidos: ",epsAssistidos)
                                 const marcado = event.target.checked
