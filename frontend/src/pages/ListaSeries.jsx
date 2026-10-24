@@ -7,47 +7,45 @@ function ListaSeries() {
     //const {user} = useContext(AuthContext);
     const [listaUser, setListaUser] = useState(null)
     useEffect(() => {
-        async function carregarDadosLista(){
+        async function carregarDadosLista() {
             const resp = await listarSerieUser();
-            console.log("response listauser: ", resp)
-
-            //console.log("Lista recebida: ", resp);
-            setListaUser(resp)
+            setListaUser(resp ?? { series: [] });
         }
 
         carregarDadosLista();
     }, []);
 
-    async function removerDaLista(idSerie){
+    async function removerDaLista(idSerie) {
         await removerSerie(idSerie);
         const novaLista = await listarSerieUser();
-        setListaUser(novaLista);
+        setListaUser(novaLista ?? { series: [] });
     }
-    if(!listaUser){
-        return <p>Carregando...</p>
+
+    if (!listaUser) {
+        return <p>Carregando...</p>;
     }
 
     return (
         <>
             <h1>Sua Lista de Séries</h1>
-            <>
-                {listaUser?.series.map((serie) => {
-                    //console.log("Série:", serie);
-                    //console.log("Dados da série: ", serie.dados_serie)
+            {listaUser.series?.length ? (
+                listaUser.series.map((serie) => {
+                    const dadosSerie = serie?.dados_serie?.dados_serie ?? serie?.dados_serie ?? null;
 
                     return (
-                        <div key={serie?.series_id}>
+                        <div key={serie?.series_id ?? serie?.id}>
                             <ExibirEpsTemporada
-                                serie={serie.dados_serie}
-                                serieId={serie.series_id}
+                                serie={dadosSerie?.serie ?? dadosSerie}
+                                serieId={serie.series_id ?? serie.id}
                                 listaUser={listaUser.series}
                                 removerDaLista={removerDaLista}
                             />
                         </div>
                     );
-                })}
-            </>
-
+                })
+            ) : (
+                <p>Você ainda não adicionou séries à lista.</p>
+            )}
         </>
     );
 }

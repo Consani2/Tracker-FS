@@ -48,32 +48,33 @@ router.get("/user/me", async (req, res) => {
 router.get("/user/series", async (req, res) => {
     const userId = req.session.userId
 
-    if(!userId){
-        res.status(401).json({
+    if (!userId) {
+        return res.status(401).json({
             autenticado: false
-        })
-    } else {
-        try{
-            const series = await obterListaSeries(userId);
-            //console.log(series)
-            res.status(200).json({series})
-        } catch(error){
-            res.status(400).json(error)
-        }
+        });
     }
 
-
-
-})
+    try {
+        const series = await obterListaSeries(userId);
+        return res.status(200).json({ series });
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+});
 router.patch("/user/series", async (req, res) => {
     const userId = req.session.userId;
     const {serieId, temporada, ep, marcado} = req.body
     //console.log("ROUTE user/series | EP Assistido", req.body);
+    let dados = {}
     if(marcado){
         await adicionarEpAssistido(userId, serieId, temporada, ep)
     } else {
         await removerEpAssistido(userId, serieId, temporada, ep)
     }
+    res.status(200).json({
+        success: true
+    })
+
 })
 
 router.get("/user/series/:serie_id", async (req, res) => {

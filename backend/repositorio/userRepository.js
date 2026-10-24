@@ -87,17 +87,26 @@ export async function findUserById(user_id){
     return resultado.rows[0];
 }
 export async function obterUserSeries(user_id){
-    //console.log("User id," , user_id);
     const query = await pool.query(
-        `SELECT * FROM user_series 
-         WHERE user_id = $1 `,
+        `SELECT
+            us.user_id,
+            us.series_id,
+            s.nome,
+            s.dado AS dados_serie
+         FROM user_series us
+         LEFT JOIN series s ON s.id = us.series_id
+         WHERE us.user_id = $1`,
         [user_id]
-    )
-    //console.log(query.rows);
-    if (query.rows.length === 0){
-        throw new Error("Não há séries na lista.")
-    }
-    return query.rows;
+    );
+
+    return query.rows.map((serie) => {
+        const dadosSerie = serie.dados_serie?.dados_serie ?? serie.dados_serie ?? null;
+
+        return {
+            ...serie,
+            dados_serie: dadosSerie,
+        };
+    });
 }
 export async function adicionarEpRepository(userId, serieId, temp, ep) {
 

@@ -14,16 +14,23 @@ export function registrarUtilizador(nome, senha){
 
 }
 
-export function logar(nomeLogin, senhaLogin) {
-    //console.log("Logar foi clicado com sucesso", nomeLogin, senhaLogin)
-    const url = `http://localhost:3000/api/login?nomeLogin=${nomeLogin}&senhaLogin=${senhaLogin}`
+export async function logar(nomeLogin, senhaLogin) {
+    const url = "http://localhost:3000/api/login";
 
-    fetch(url, {
+    const response = await fetch(url, {
         method: "POST",
-        credentials:  "include"
-    }).then(response => response.json()).then(data => {
-            console.log("Dado: ", data)
-        }).catch(error => {
-            console.log("Erro ao realizar login: ", error)
-    })
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nomeLogin, senhaLogin }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.mensagem || "Erro ao realizar login");
+    }
+
+    return data;
 }

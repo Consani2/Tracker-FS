@@ -1,218 +1,200 @@
+import { useEffect, useState } from "react";
 import { carregarDetalhesSeason } from "../services/apiService.js";
-import {useContext, useEffect, useState} from "react";
 import {
-    adicionarSerie, carregarDadosUser,
+    adicionarSerie,
     listarSerieUser,
     marcarEpAssistidoAPI,
     obterEpsAssistidosAPI,
-    removerSerie
 } from "../services/userService.js";
-import {AuthContext} from "../contexts/AuthContext.jsx";
-import listaSeries from "../pages/ListaSeries.jsx";
 
-//TODO: Atualizar checkbox para episodios assistidos.
-function serieEstaNaLista(lista, idSerie){
-    return lista.some(serie => serie.series_id === idSerie);
+function serieEstaNaLista(lista, idSerie) {
+    if (!Array.isArray(lista) || !idSerie) return false;
+
+    return lista.some(
+        (serie) => Number(serie.series_id ?? serie.id) === Number(idSerie)
+    );
 }
 
 function ExibirEpsTemporada(props) {
+    const serie = props.serie ?? {};
+    const serieId = props.serieId ?? serie.id ?? null;
+    const listaUser = Array.isArray(props.listaUser) ? props.listaUser : [];
+
     const [temporadaSelecionada, setTemporadaSelecionada] = useState(1);
     const [dadosTemporada, setDadosTemporada] = useState(null);
-    const listaUser = props.listaUser ?? [];
-
-    const [todosEpAtivo, setTodosEpAtivo] = useState(false);
     const [epsAssistidos, setEpAssistido] = useState([]);
-    const serie = props.serie
-    console.log("Série: ", serie)
-    console.log("Props ", props)
-    const serieJaExiste = serieEstaNaLista(listaUser, serie.id);
-    console.log("EPs assistidos: ", epsAssistidos)
+    const [serieNaLista, setSerieNaLista] = useState(false);
+    //console.log("Eps assistidos: ", epsAssistidos)
 
     useEffect(() => {
+        setSerieNaLista(serieEstaNaLista(listaUser, serieId));
+    }, [listaUser, serieId]);
 
-        //Carrega dados da season e a armazena-os em dadosTemporada
+    useEffect(() => {
+        if (!serieId) return;
+
+        let ativo = true;
+
         async function carregarDados() {
-            const response = await carregarDetalhesSeason(
-                serie.id,
-                temporadaSelecionada
-            );
+            const response = await carregarDetalhesSeason(serieId, temporadaSelecionada);
             const dados = await response.json();
 
-            setDadosTemporada(dados);
-            //console.log("Dados temporada: ", dados)
+            if (ativo) {
+                setDadosTemporada(dados);
+            }
         }
 
         carregarDados();
 
-    }, [serie.id, temporadaSelecionada]);
+        return () => {
+            ativo = false;
+        };
+    }, [serieId, temporadaSelecionada]);
 
     useEffect(() => {
-        async function carregarEpAssistidos(){
-            const dados = await obterEpsAssistidosAPI(serie.id)
-            //console.log(dados)
+        if (!serieId) return;
 
-            setEpAssistido(dados)
+        let ativo = true;
 
-            //const temporada = dados.find(item => item.temporada === temporadaSelecionada);
+        async function carregarEpAssistidos() {
+            const dados = await obterEpsAssistidosAPI(serieId);
 
+            if (ativo) {
+                setEpAssistido(Array.isArray(dados) ? dados : []);
+            }
+        }
 
-        } carregarEpAssistidos()
-    }, [serie.id]);
+        carregarEpAssistidos();
+
+        return () => {
+            ativo = false;
+        };
+    }, [serieId]);
 
     async function adicionarSerieListaUser() {
+        if (!serie?.id) return;
+
         const dados_serie = {
-            serie: serie,
-            eps_por_temporada: serie.seasons.map((temporada) => ({
+            serie,
+            eps_por_temporada: (serie.seasons ?? []).map((temporada) => ({
                 temporada: temporada.season_number,
                 total_episodios: temporada.episode_count,
-
             })),
-            episodios_assistidos: []
+            episodios_assistidos: [],
         };
-        //console.log("Dados_serie: ", dados_serie);
+
         await adicionarSerie(dados_serie);
         const dados = await listarSerieUser();
-        setListaUser(dados.series);
+        const series = dados?.series ?? [];
+
+        setSerieNaLista(true);
+
+        if (typeof props.onListaAtualizada === "function") {
+            props.onListaAtualizada(series);
+        }
     }
-    async function removerSerie() {
-        await props.removerDaLista(props.serieId)
+
+    async function removerSerieDaLista() {
+        if (!serieId || typeof props.removerDaLista !== "function") {
+            return;
+        }
+
+        await props.removerDaLista(serieId);
+        setSerieNaLista(false);
     }
-    async function marcarEpAssistido(temporada, ep, marcado){
-        await marcarEpAssistidoAPI(serie.id, temporada, ep, marcado);
+
+    async function marcarEpAssistido(temporada, ep, marcado) {
+        if (!serieId) return;
+
+        try{
+        await marcarEpAssistidoAPI(serieId, temporada, ep, marcado);
 
         setEpAssistido((atuais) => {
-            if(marcado){
+            if (marcado) {
                 const jaExiste = atuais.some(
-                    item =>
-                        item.season_number === temporada &&
-                        item.episode_number === ep
-                )
-                if(jaExiste) return atuais;
+                    (item) =>
+                        Number(item.season_number) === temporada &&
+                        Number(item.episode_number) === ep
+                );
+
+                if (jaExiste) return atuais;
 
                 return [
                     ...atuais,
                     {
                         season_number: temporada,
                         episode_number: ep,
-                    }
+                    },
                 ];
             }
 
             return atuais.filter(
-                item =>
-                    !(
-                        item.season_number === temporada &&
-                        item.episode_number === ep
-                    )
-            )
-        })
-
+                (item) =>
+                    !(item.season_number === temporada && item.episode_number === ep)
+            );
+        });
+    } catch(err){
+        console.log("Erro ao marcar o episodio", err)
+        }
     }
 
+    if (!serie?.name) {
+        return null;
+    }
 
     return (
         <div>
-
             <section>
                 Nome: {serie.name}
-                <br/>
+                <br />
                 Episódios: {serie.number_of_episodes}
-                <br/>
+                <br />
                 Temporadas: {serie.number_of_seasons}
-                <br/>
+                <br />
 
-                {serieJaExiste ? (
-                    <button onClick={()=> removerSerie()}>
+                {serieNaLista ? (
+                    <button onClick={removerSerieDaLista}>
                         Remover Série da Lista
                     </button>
-                ):
+                ) : (
                     <button onClick={adicionarSerieListaUser}>
                         Adicionar à Lista
                     </button>
-                }
+                )}
             </section>
 
-            <br/>
+            <br />
 
             <label>Selecione a temporada: </label>
-            {/*Cria lista de temporadas e atualiza os detalhes conforme a seleção do utilizador*/}
             <select
                 value={temporadaSelecionada}
-                onChange={(e) =>
-                    setTemporadaSelecionada(Number(e.target.value))
-                }
+                onChange={(event) => setTemporadaSelecionada(Number(event.target.value))}
             >
-
-                {Array.from(
-                    { length: serie.number_of_seasons },
-                    (_, i) => (
-                        <option key={i} value={i + 1}>
-                            Temporada {i + 1}
-                        </option>
-                    )
-                )}
+                {Array.from({ length: serie.number_of_seasons ?? 0 }, (_, i) => (
+                    <option key={i} value={i + 1}>
+                        Temporada {i + 1}
+                    </option>
+                ))}
             </select>
-            <br/>
-            { !todosEpAtivo && (
-                <button onClick={() =>  {
-                if(!serieAtual){
-                alert("Adicione a série à sua lista antes de marcar episódios como assistidos.");
-                return;
-            }
 
-                const novaLista = Array.from({ length: dadosTemporada?.episodes.length },
-                    (_, i) => ({
-                        temporada: temporadaSelecionada,
-                        nmr_episodio: dadosTemporada?.episodes[i]?.episode_number
-                        })
-                    );
-                setEpisodiosAssistidos(novaLista);
-                setTodosEpAtivo(true);
-
-                currentUser.listaSeries = currentUser.listaSeries.map(
-                    (serie) =>
-                        serie.id === serieAtual.id
-                            ? {...serie, episodios_assistidos: novaLista}
-                            : serie
-                )
-
-                localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
-            }}>Marcar Temporada como Assistida</button>
-            )}
-            {todosEpAtivo && (
-                <button onClick={()=>{
-                    setTodosEpAtivo(false);
-                    setEpisodiosAssistidos([]);
-                    serieAtual.episodios_assistidos = [];
-                }
-                }>Desmarcar Temporada</button>
-            )}
-
-            <h4>
-                Número de episódios: {dadosTemporada?.episodes?.length}
-            </h4>
+            <h4>Número de episódios: {dadosTemporada?.episodes?.length ?? 0}</h4>
 
             <div>
-                {/*Mapeia os episódios de cada temporada selecionada pelo utilizador*/}
                 {dadosTemporada?.episodes?.map((episodio, i) => (
-                    <div key={episodio.id}>
+                    <div key={episodio.id ?? `${temporadaSelecionada}-${episodio.episode_number}`}>
                         <input
-                            type={"checkbox"}
+                            type="checkbox"
                             checked={epsAssistidos.some(
-                                item =>
+                                (item) =>
                                     item.season_number === temporadaSelecionada &&
-                                    item.episode_number === episodio.number
+                                    item.episode_number === episodio.episode_number
                             )}
                             onChange={(event) => {
-                                //console.log("EP assistidos: ",epsAssistidos)
-                                const marcado = event.target.checked
-
                                 marcarEpAssistido(
                                     temporadaSelecionada,
                                     episodio.episode_number,
-                                    marcado
-                                )
+                                    event.target.checked
+                                );
                             }}
                         />
 
@@ -228,6 +210,5 @@ function ExibirEpsTemporada(props) {
         </div>
     );
 }
-
 
 export default ExibirEpsTemporada;

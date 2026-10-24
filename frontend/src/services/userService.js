@@ -52,20 +52,29 @@ export async function obterUtilizadorLogado(){
 
 }
 export async function marcarEpAssistidoAPI(serieId, temporada, ep, marcado){
+    //console.log("marcarEpAssistidoAPI chamada");
     const url = `http://localhost:3000/api/user/series`
     console.log(`EP ${ep} | Temporada ${temporada} | Marcado ${marcado}`);
-    const response = await fetch(url, {
-        method: 'PATCH',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({serieId, temporada, ep, marcado}),
-        credentials: "include"
-    })
-    if (response.ok){
-        return await response.json();
-    } else {
-        return response.headers
+    try {
+        console.log("Entrei no try")
+        console.log("URL: ", url)
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({serieId, temporada, ep, marcado}),
+            credentials: "include"
+        })
+
+        if (response.ok) {
+            console.log("Response Ok: ", response)
+            return await response.json();
+        }
+
+    }catch (erro){
+        console.log("Erro ao marcar ep como assistido: ", erro)
+        throw erro;
     }
 }
 export async function obterEpsAssistidosAPI(serieId){
