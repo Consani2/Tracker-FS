@@ -24,7 +24,13 @@ Uma aplicação web Single-Page Application (SPA), desenvolvida com React, que p
 ## Problema que o Projeto Resolve
 
 ## Modo de Utilização da IA nesse Projeto
-A IA foi utilizada na produção do código. O meu papel consistiu em desenhar as relações e os fluxos de dados dentro do sistema, bem como em estudar, analisar e adaptar o código gerado pela IA antes da sua implementação.
+## Como a IA foi utilizada
+
+A inteligência artificial foi utilizada como principal ferramenta de geração de código ao longo do desenvolvimento deste projeto. A minha abordagem consistiu em definir as funcionalidades pretendidas, solicitar a sua implementação à IA e, posteriormente, estudar, analisar e adaptar o código gerado às necessidades da aplicação. Optei por explorar intensivamente esta abordagem, sem recorrer à escrita manual do código como método principal, com o objetivo de compreender até que ponto seria possível desenvolver uma aplicação desta forma e identificar as suas limitações.
+
+À medida que o projeto evoluiu, surgiram problemas que a IA nem sempre conseguia resolver de forma satisfatória, sobretudo relacionados com a integração entre componentes, o fluxo e a modelação dos dados e a organização da arquitetura. A resolução dessas dificuldades exigiu pesquisas, leituras e estudos complementares, direcionando a minha aprendizagem para a compreensão global do sistema, das responsabilidades de cada componente e das relações entre as diferentes camadas da aplicação.
+
+Embora o meu foco principal não tenha sido a escrita manual do código, procurei compreender as implementações geradas, aprofundando os detalhes técnicos sempre que surgiam erros ou comportamentos inesperados. Assim, a minha aprendizagem acompanhou o crescimento e o aumento da complexidade do projeto, contribuindo para desenvolver uma compreensão mais abrangente da arquitetura de software e uma maior capacidade de análise, diagnóstico e resolução de problemas (*troubleshooting*).
 
 ## Dificuldades Encontradas
 
