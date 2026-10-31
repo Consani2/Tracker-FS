@@ -2,7 +2,7 @@ import {
     adicionarEpRepository,
     adicionarSerieLista,
     findUserById, obterEpsAssistidosRepository,
-    obterUserSeries, removerEpRepository,
+    obterUserSeries, removerEpRepository, removerEpSerie,
     removerSerieLista
 } from "../repositorio/userRepository.js";
 import {obterEpsAssistidosAPI} from "../../frontend/src/services/userService.js";
@@ -18,6 +18,7 @@ export async function adicionarSerie(userId, id_serie, dados_serie) {
 }
 export async function removerSerie(idUser, idSerie){
     try {
+        await removerEpSerie(idUser, idSerie);
         return await removerSerieLista(idUser, idSerie);
     }catch (erro){
         console.log("Falha ao remover série da BD. Erro: ", erro.message);

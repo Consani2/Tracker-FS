@@ -25,6 +25,7 @@ router.post("/user/series/:serie_id", async (req, res) => {
         mensagem: `Série ${dados_serie.serie.name} adicionada com sucesso!`
     })
 })
+
 router.delete("/user/series/:serie_id", async (req, res) => {
     const userId = req.session.userId;
     const {serie_id} = req.params;
@@ -35,6 +36,7 @@ router.delete("/user/series/:serie_id", async (req, res) => {
     })
 
 })
+
 router.get("/user/me", async (req, res) => {
     if(!req.session.userId){
         return res.status(401).json({
@@ -45,6 +47,7 @@ router.get("/user/me", async (req, res) => {
     res.status(200).json(user);
     //console.log("User: ", user)
 })
+
 router.get("/user/series", async (req, res) => {
     const userId = req.session.userId
 
@@ -61,6 +64,7 @@ router.get("/user/series", async (req, res) => {
         return res.status(400).json({ error: error.message });
     }
 });
+
 router.patch("/user/series", async (req, res) => {
     const userId = req.session.userId;
     const {serieId, temporada, ep, marcado} = req.body

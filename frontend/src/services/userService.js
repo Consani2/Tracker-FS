@@ -26,6 +26,7 @@ export async function adicionarSerie(dados_serie){
     })
     return await response.json();
 }
+
 export async function removerSerie(idSerie){
     const url = `http://localhost:3000/api/user/series/${idSerie}`
     const response = await fetch(url, {
@@ -39,6 +40,7 @@ export async function removerSerie(idSerie){
         return alert("Falha ao remover a série")
     }
 }
+
 export async function obterUtilizadorLogado(){
     const response = await fetch("http://localhost:3000/api/user/me",{
         credentials: "include"
@@ -51,6 +53,7 @@ export async function obterUtilizadorLogado(){
     return await response.json();
 
 }
+
 export async function marcarEpAssistidoAPI(serieId, temporada, ep, marcado){
     //console.log("marcarEpAssistidoAPI chamada");
     const url = `http://localhost:3000/api/user/series`
@@ -77,6 +80,7 @@ export async function marcarEpAssistidoAPI(serieId, temporada, ep, marcado){
         throw erro;
     }
 }
+
 export async function obterEpsAssistidosAPI(serieId){
     //console.log("ObterEpAssistidosAPI foi chamado!")
     const url = `http://localhost:3000/api/user/series/${serieId}`
@@ -94,12 +98,14 @@ export async function obterEpsAssistidosAPI(serieId){
 
     return dados.body;
 }
+
 export async function carregarDadosUser(){
     const response = await fetch("http://localhost:3000/api/user/me",{
         method: "GET",
         credentials: "include"
     })
 }
+
 export async function removerEpAssistidoAPI(seriesId, seasonNumber, episodeNumber) {
     console.log("Serie id: ", seriesId)
     console.log("Season number: ", seasonNumber)

@@ -76,6 +76,7 @@ export async function removerSerieLista(idUser, idSerie){
     }
     return resultado.rows[0];
 }
+
 export async function findUserById(user_id){
     const resultado = await pool.query(
         `SELECT id, username FROM users WHERE id = $1`,
@@ -86,6 +87,7 @@ export async function findUserById(user_id){
     }
     return resultado.rows[0];
 }
+
 export async function obterUserSeries(user_id){
     const query = await pool.query(
         `SELECT
@@ -108,6 +110,7 @@ export async function obterUserSeries(user_id){
         };
     });
 }
+
 export async function adicionarEpRepository(userId, serieId, temp, ep) {
 
     const query = await pool.query(
@@ -140,6 +143,16 @@ export async function obterEpsAssistidosRepository (user, serieId){
     )
     //console.log(typeof query.rows[0])
     return query.rows;
+}
+
+export async function removerEpSerie(idUser, idSerie) {
+    const resultado = await pool.query(
+        `DELETE FROM user_watched_episodes
+         WHERE user_id = $1 AND series_id = $2`,
+        [idUser, idSerie]
+    );
+
+    return resultado.rowCount;
 }
 
 async function obtertTotalEpsAssistidosRepository (userId, serieId, temp){
