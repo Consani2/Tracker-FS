@@ -4,7 +4,7 @@ import {
     adicionarSerie,
     listarSerieUser,
     marcarEpAssistidoAPI,
-    obterEpsAssistidosAPI,
+    obterEpsAssistidosAPI, removerEpAssistidoAPI,
 } from "../services/userService.js";
 
 function serieEstaNaLista(lista, idSerie) {
@@ -103,14 +103,13 @@ function ExibirEpsTemporada(props) {
         setSerieNaLista(false);
     }
 
-    async function marcarEpAssistido(temporada, ep, marcado) {
+    async function marcarEpAssistido(temporada, ep) {
         if (!serieId) return;
 
-        try{
-        await marcarEpAssistidoAPI(serieId, temporada, ep, marcado);
+        try {
+            await marcarEpAssistidoAPI(serieId, temporada, ep);
 
-        setEpAssistido((atuais) => {
-            if (marcado) {
+            setEpAssistido((atuais) => {
                 const jaExiste = atuais.some(
                     (item) =>
                         Number(item.season_number) === temporada &&
@@ -126,15 +125,25 @@ function ExibirEpsTemporada(props) {
                         episode_number: ep,
                     },
                 ];
-            }
+            });
 
-            return atuais.filter(
-                (item) =>
-                    !(item.season_number === temporada && item.episode_number === ep)
+        } catch (err) {
+            console.log("Erro ao marcar o episódio", err);
+        }
+    }
+
+    async function desmarcarEpisodio(seasonNumber, episodeNumber) {
+        try {
+            await removerEpAssistidoAPI(serieId, seasonNumber, episodeNumber);
+
+            setEpAssistido(prev =>
+                prev.filter(ep =>
+                    !(ep.season_number === seasonNumber &&
+                        ep.episode_number === episodeNumber)
+                )
             );
-        });
-    } catch(err){
-        console.log("Erro ao marcar o episodio", err)
+        } catch (error) {
+            console.error("Erro ao desmarcar episódio:", error);
         }
     }
 
@@ -190,12 +199,19 @@ function ExibirEpsTemporada(props) {
                                     item.episode_number === episodio.episode_number
                             )}
                             onChange={(event) => {
-                                marcarEpAssistido(
-                                    temporadaSelecionada,
-                                    episodio.episode_number,
-                                    event.target.checked
-                                );
-                            }}
+                                if (event.target.checked){
+                                    marcarEpAssistido(
+                                        temporadaSelecionada,
+                                        episodio.episode_number,
+                                    );
+                                } else {
+                                    desmarcarEpisodio(
+                                        temporadaSelecionada,
+                                        episodio.episode_number,
+                                    )
+                                }
+                            }
+                        }
                         />
 
                         <span>

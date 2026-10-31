@@ -100,3 +100,22 @@ export async function carregarDadosUser(){
         credentials: "include"
     })
 }
+export async function removerEpAssistidoAPI(seriesId, seasonNumber, episodeNumber) {
+    console.log("Serie id: ", seriesId)
+    console.log("Season number: ", seasonNumber)
+    console.log("episode number: ", episodeNumber)
+    const resposta = await fetch(`http://localhost:3000/api/user/series/${seriesId}/${seasonNumber}/${episodeNumber}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include"
+    });
+    console.log("resposta: ", resposta)
+
+    if (!resposta.ok) {
+        throw new Error("Erro ao remover episódio assistido");
+    }
+
+    return resposta.json();
+}
