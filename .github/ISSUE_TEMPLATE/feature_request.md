@@ -1,3 +1,10 @@
+---
+name: Enhancement
+about: Propor a criação de funcionalidades
+title: ""
+labels: new feature
+assignees: ""
+---
 ### Descrição
 
 (Descreva de forma clara e objetiva a nova funcionalidade que pretende implementar.)

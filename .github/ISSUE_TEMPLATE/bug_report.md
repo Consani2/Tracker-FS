@@ -1,3 +1,11 @@
+---
+name: Bug Report
+about: Reportar erros ou comportamentos inesperados na aplicação
+title: ""
+labels: bug
+assignees: ""
+---
+
 ### Descrição
 (Provide a clear and concise description of the problem.)
 
