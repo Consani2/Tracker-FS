@@ -2,7 +2,7 @@
 name: Enhancement
 about: Propor a melhoria de funcionalidades
 title: ""
-labels: new feature
+labels: enhancement
 assignees: ""
 ---
 
