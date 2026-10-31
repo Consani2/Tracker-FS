@@ -90,4 +90,27 @@ router.get("/user/series/:serie_id", async (req, res) => {
         console.log("ERROR: ", error.message)
     }
 })
+
+router.delete("/user/series/:serie_id/:temp_nmr/:ep_nmr", async (req, res) => {
+    const userId = req.session.userId;
+    const {serie_id, temp_nmr, ep_nmr} = req.params;
+
+    try {
+        await removerEpAssistido(userId, serie_id, temp_nmr, ep_nmr);
+
+        res.status(200).json({
+            success: true
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Erro ao remover episódio"
+        });
+    }
+
+})
+
 export default router;

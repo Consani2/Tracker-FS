@@ -119,6 +119,16 @@ export async function adicionarEpRepository(userId, serieId, temp, ep) {
 }
 
 export async function removerEpRepository (userId, serieId, temp, ep){
+    const resultado = await pool.query(
+        `DELETE FROM user_watched_episodes
+             WHERE user_id = $1
+             AND series_id = $2
+             AND season_number = $3
+             AND episode_number = $4
+             RETURNING *`,
+        [userId, serieId, temp, ep]
+    );
+    return resultado.rowCount > 0;
 
 }
 
@@ -131,6 +141,7 @@ export async function obterEpsAssistidosRepository (user, serieId){
     //console.log(typeof query.rows[0])
     return query.rows;
 }
+
 async function obtertTotalEpsAssistidosRepository (userId, serieId, temp){
     const resultado = await pool.query (
         `SELECT * FROM user_series 
@@ -143,6 +154,7 @@ async function obtertTotalEpsAssistidosRepository (userId, serieId, temp){
     );
     return temporada?.total_episodios;
 }
+
 async function obterUserSerie(userId, serieId) {
     const query = await pool.query(
         `SELECT *
@@ -154,3 +166,4 @@ async function obterUserSerie(userId, serieId) {
 
     return query.rows[0];
 }
+
