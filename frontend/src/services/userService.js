@@ -4,7 +4,6 @@ export async function listarSerieUser(){
         credentials: "include"
     })
     const dados = await response.json();
-    console.log("Dados para a lista: ", dados)
     if (dados.autenticado === false){
         alert ("Utilizador não logado!");
         return false;
@@ -57,10 +56,8 @@ export async function obterUtilizadorLogado(){
 export async function marcarEpAssistidoAPI(serieId, temporada, ep, marcado){
     //console.log("marcarEpAssistidoAPI chamada");
     const url = `http://localhost:3000/api/user/series`
-    console.log(`EP ${ep} | Temporada ${temporada} | Marcado ${marcado}`);
+    //console.log(`EP ${ep} | Temporada ${temporada} | Marcado ${marcado}`);
     try {
-        console.log("Entrei no try")
-        console.log("URL: ", url)
         const response = await fetch(url, {
             method: 'PATCH',
             headers: {
@@ -107,9 +104,6 @@ export async function carregarDadosUser(){
 }
 
 export async function removerEpAssistidoAPI(seriesId, seasonNumber, episodeNumber) {
-    console.log("Serie id: ", seriesId)
-    console.log("Season number: ", seasonNumber)
-    console.log("episode number: ", episodeNumber)
     const resposta = await fetch(`http://localhost:3000/api/user/series/${seriesId}/${seasonNumber}/${episodeNumber}`, {
         method: "DELETE",
         headers: {
@@ -117,7 +111,6 @@ export async function removerEpAssistidoAPI(seriesId, seasonNumber, episodeNumbe
         },
         credentials: "include"
     });
-    console.log("resposta: ", resposta)
 
     if (!resposta.ok) {
         throw new Error("Erro ao remover episódio assistido");

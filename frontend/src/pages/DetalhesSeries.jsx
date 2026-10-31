@@ -2,7 +2,7 @@ import {useParams} from "react-router-dom";
 import {searchSeriesById} from "../services/apiService.js";
 import {useEffect, useState} from "react";
 import ExibirEpsTemporada from "../components/ExibirEpsTemporada.jsx";
-import { listarSerieUser} from "../services/userService.js";
+import { listarSerieUser, removerSerie } from "../services/userService.js";
 
 //Página de detalhes da série, exibe informações detalhadas sobre a série selecionada pelo utilizador, incluindo temporadas e episódios.
 function DetalhesSeries() {
@@ -40,6 +40,18 @@ function DetalhesSeries() {
         carregarSerie();
     }, [id]);
 
+    async function removerDaLista(idSerie) {
+        try {
+            await removerSerie(idSerie);
+
+            const novaLista = await listarSerieUser();
+
+            setListaUser(novaLista?.series ?? []);
+        } catch (error) {
+            console.error("Erro ao remover série:", error);
+        }
+    }
+
     if (serie === null) {
         return  (
             <p>Carregando...</p>
@@ -51,7 +63,9 @@ function DetalhesSeries() {
             <p>{serie.name}</p>
             <ExibirEpsTemporada
                 serie = {serie}
+                serieId = {serie.id}
                 listaUser = {listaUser}
+                removerDaLista = {removerDaLista}
             />
         </div>
     );

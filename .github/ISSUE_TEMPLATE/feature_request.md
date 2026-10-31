@@ -1,8 +1,8 @@
 ---
-name: Enhancement
-about: Propor a criação de funcionalidades
+name: New Feature
+about: Propor a implementação de novas funcionalidades
 title: ""
-labels: new feature
+labels: feature
 assignees: ""
 ---
 ### Descrição

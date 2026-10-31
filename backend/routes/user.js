@@ -67,13 +67,16 @@ router.get("/user/series", async (req, res) => {
 
 router.patch("/user/series", async (req, res) => {
     const userId = req.session.userId;
-    const {serieId, temporada, ep, marcado} = req.body
+    const {serieId, temporada, ep} = req.body
     //console.log("ROUTE user/series | EP Assistido", req.body);
-    let dados = {}
-    if(marcado){
+    try{
         await adicionarEpAssistido(userId, serieId, temporada, ep)
-    } else {
-        await removerEpAssistido(userId, serieId, temporada, ep)
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "Error ao adicionar o episódio"
+        })
     }
     res.status(200).json({
         success: true

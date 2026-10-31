@@ -104,10 +104,27 @@ function ExibirEpsTemporada(props) {
     }
 
     async function marcarEpAssistido(temporada, ep) {
+
         if (!serieId) return;
 
         try {
+            if (!serieNaLista) {
+                console.log("Adicionando série à lista...");
+
+                await adicionarSerieListaUser();
+
+                console.log("Série adicionada.");
+            }
+
+            console.log("Marcando episódio...", {
+                serieId,
+                temporada,
+                ep
+            });
+
             await marcarEpAssistidoAPI(serieId, temporada, ep);
+            console.log("Pedido de marcação concluído.");
+
 
             setEpAssistido((atuais) => {
                 const jaExiste = atuais.some(
