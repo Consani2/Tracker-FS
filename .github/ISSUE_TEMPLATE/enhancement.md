@@ -1,3 +1,11 @@
+---
+name: Enhancement
+about: Propor melhorias em funcionalidades existentes
+title: ""
+labels: enhancement
+assignees: ""
+---
+
 ### Descrição
 
 (Descreva de forma clara e objetiva a funcionalidade existente que precisa de ser melhorada.)
